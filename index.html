@@ -153,6 +153,8 @@ table.ds{margin-top:12px;font-size:16px}table.ds td{white-space:normal;line-heig
 .vtab{display:flex;align-items:center;gap:10px;text-align:left;min-height:46px;padding:6px 12px;border-radius:12px;border:2px solid var(--line);background:var(--pane);color:var(--ink);font-size:16px}
 .vtab b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--bg);flex:none;font-size:14px}
 .vtab span{margin-left:auto;color:var(--soft);font-size:14px}.vtab.cur{border-color:var(--navy);background:color-mix(in srgb,var(--navy) 8%,var(--pane))}
+.pv{min-height:30px;margin:0 0 8px;font-size:18px;line-height:2.2}
+.keys button .fr{font-size:14px}
 .scroll tr.off td{color:var(--soft)}
 .vtab.ok b{background:var(--okbg);color:var(--ok)}.vtab:disabled{opacity:.55}
 .card .ct{flex:1;min-width:0}
@@ -188,7 +190,7 @@ function normIn(raw) {
     [/bình\s*phương|binh\s*phuong/g, " ^2 "], [/lập\s*phương|lap\s*phuong/g, " ^3 "], [/(^|\s)(mũ|mu)(?=\s)/g, " ^ "],
     [/lớn\s*hơn\s*hoặc\s*bằng/g, " >= "], [/(nhỏ|bé)\s*hơn\s*hoặc\s*bằng/g, " <= "], [/lớn\s*hơn/g, " > "], [/(nhỏ|bé)\s*hơn/g, " < "], [/(^|\s)khác(?=\s)/g, " != "],
     [/(^|\s)(cộng|cong)(?=\s)/g, " + "], [/(^|\s)(trừ|tru)(?=\s)/g, " - "], [/(^|\s)(nhân|nhan)(\s*(với|voi))?(?=\s)/g, " * "],
-    [/(^|\s)(chia|chia\s*cho)(?=\s)/g, " / "], [/(^|\s)phần(?=\s)/g, " / "], [/(^|\s)(âm|am)(?=\s)/g, " - "],
+    [/(^|\s)(chia|chia\s*cho)(?=\s)/g, " / "], [/(^|\s)(phần|trên)(?=\s)/g, " / "], [/(^|\s)(âm|am)(?=\s)/g, " - "],
     [/mở\s*ngoặc/g, " ( "], [/đóng\s*ngoặc/g, " ) "], [/(^|\s)(bằng|bang)(?=\s)/g, " = "]];
   for (const [r, t] of W) s = s.replace(r, t);
   s = s.replace(/:/g, " / ").replace(/(\d),(\d)/g, "$1.$2");
@@ -1063,9 +1065,101 @@ function tutorVal(C, n, V, E, raw) {
   const base = show + "Chưa đúng. ";
   return base + (C.tries >= 3 ? detailed(C) : knowFor(q) + nextHint(C));
 }
+/* ----- Nhận dạng yêu cầu: tìm x, rút gọn, so sánh, điều kiện, tính ----- */
+function task(raw) {
+  let s = raw.trim(), cond = "";
+  const cm = s.match(/[,;]?\s*(với|khi|biết rằng|nếu)\s+([abxy]\s*[<>≤≥≠][^?]*)\??$/i); if (cm) { cond = cm[2]; s = s.slice(0, cm.index); }
+  s = s.replace(/[?.]\s*$/, "");
+  const rules = [["solve", /^(em\s+)?(hãy\s+)?(tìm|tính)\s+(giá trị (của )?)?x\s*(để|biết|sao cho|thỏa mãn|thoả mãn|:)\s*/i], ["solve", /^(em\s+)?(hãy\s+)?giải( phương trình| bất phương trình)?\s*:?\s*/i],
+    ["simp", /^(em\s+)?(hãy\s+)?(rút gọn|thu gọn)( biểu thức)?\s*:?\s*/i], ["cmp", /^(em\s+)?(hãy\s+)?so sánh\s*:?\s*/i],
+    ["dk", /^(em\s+)?(tìm\s+)?(điều kiện( xác định)?|đkxđ|dkxd)( để)?( của)?( biểu thức)?\s*:?\s*/i], ["calc", /^(em\s+)?(hãy\s+)?(tính giá trị|tính)( của)?( biểu thức)?\s*:?\s*/i]];
+  let kind = null; for (const [k, r] of rules) { const m = s.match(r); if (m) { kind = k; s = s.slice(m[0].length); break; } }
+  if (!kind && /(xác định|có nghĩa)\s*(khi|với)?\s*(nào|gì)?\s*$/i.test(s)) { kind = "dk"; s = s.replace(/(xác định|có nghĩa).*$/i, ""); }
+  if (kind === "dk") s = s.replace(/(xác định|có nghĩa).*$/i, "");
+  s = s.replace(/^[A-Z]\s*=\s*/, "");
+  return {kind, body: s.trim(), cond};
+}
+function chain(raw) { // "0 ≤ x < 9", "x > 4" -> hàm kiểm tra
+  const tk = tokenize(normIn(raw)).filter(t => t !== "và"); const ops = [], parts = []; let cur = [];
+  for (const t of tk) { if (/^(>=|<=|!=|<|>)$/.test(t)) { ops.push(t); parts.push(cur); cur = []; } else cur.push(t); } parts.push(cur);
+  if (!ops.length || ops.length > 2 || parts.some(p => !p.length)) return null;
+  try { const P = parts.map(parseExpr); if (!P.some(hasVar)) return null;
+    const cmp = (a, o, b) => o === ">" ? a > b + 1e-12 : o === "<" ? a < b - 1e-12 : o === ">=" ? a >= b - 1e-12 : o === "<=" ? a <= b + 1e-12 : Math.abs(a - b) > 1e-12;
+    return {P, ops, f: x => { const e = {x, a: x, b: x, y: x}, v = P.map(n => ev(n, e)); if (v.some(isNaN)) return false; return ops.every((o, k) => cmp(v[k], o, v[k + 1])); }}; } catch (e) { return null; }
+}
+const XS = (() => { const a = []; for (let x = -30; x <= 120; x += 0.25) a.push(x, x + 0.1); return a; })();
+const sameSetFn = (f, g) => XS.every(x => !!f(x) === !!g(x));
+function condTxt(n) { const c = []; walk(n, x => { if (x.t === "sqrt" && hasVar(x.a)) c.push(Mi(toM(x.a.t === "par" ? x.a.a : x.a)) + " ≥ 0"); if (x.t === "/" && hasVar(x.b)) c.push(Mi(toM(x.b.t === "par" ? x.b.a : x.b)) + " ≠ 0"); }); return [...new Set(c)]; }
+function roots(L, R) { const out = [], g = x => ev(L, {x}) - ev(R, {x}); let px = null, pv = NaN;
+  const scan = (a, b, h) => { for (let x = a; x <= b; x += h) { const v = g(x); if (Math.abs(v) < 1e-9) out.push(x); else if (!isNaN(v) && !isNaN(pv) && v * pv < 0 && Math.abs(v) < 1e3 && Math.abs(pv) < 1e3) { let lo = px, hi = x; for (let k = 0; k < 60; k++) { const m = (lo + hi) / 2; (g(lo) * g(m) <= 0) ? hi = m : lo = m; } out.push((lo + hi) / 2); } px = x; pv = v; } };
+  scan(-100, 100, 0.01); px = null; pv = NaN; scan(100, 20000, 0.5);
+  return out.filter((r, i, a) => !a.slice(0, i).some(q => Math.abs(q - r) < 1e-4)).map(r => Math.abs(r - Math.round(r)) < 1e-6 ? Math.round(r) : r); }
+function taskStart(T, want) {
+  const A = analyze(T.body), E = envs(T.cond || T.body);
+  if (T.kind === "solve") {
+    if (A.kind === "eq" && A.parts.length === 2 && A.parts.some(hasVar)) { const [L, R] = A.parts; BOT.last = {kind: "solve", L, R, tries: 0};
+      const c = [...condTxt(L), ...condTxt(R)]; let how = "";
+      let hasSq = false, hasCb = false; walk(L, x => { if (x.t === "sqrt") hasSq = true; if (x.t === "cbrt") hasCb = true; }); walk(R, x => { if (x.t === "sqrt") hasSq = true; if (x.t === "cbrt") hasCb = true; });
+      if (hasSq) how = "<li>Đưa về dạng √{A} = B. Cần B ≥ 0, rồi bình phương hai vế: A = B².</li>".replace(/√\{A\}/, Mi("√{A}"));
+      else if (hasCb) how = `<li>Đưa về dạng ${Mi("∛{A} = B")} rồi lập phương hai vế: A = B³.</li>`;
+      else how = "<li>Quy đồng (nếu có mẫu), chuyển vế, thu gọn để tìm x.</li>";
+      return `Mình hiểu là phương trình: ${Mi(toM(L))} = ${Mi(toM(R))}.<ol>${c.length ? `<li>Ghi điều kiện: ${c.join("; ")}.</li>` : ""}${how}<li>Giải ra x, rồi <b>đối chiếu điều kiện</b>.</li></ol>Em giải ra x bằng bao nhiêu? Gõ <i>x = ...</i>, mình thay vào kiểm tra cho em.`; }
+    if (A.kind === "ineq") { const I = A; BOT.last = {kind: "set", f: x => !!truthIneq(I, {x, a: x, b: x}), what: "bất phương trình", tries: 0, show: Mi(toM(I.L)) + " " + I.op.replace(">=", "≥").replace("<=", "≤") + " " + Mi(toM(I.R))};
+      const c = [...condTxt(I.L), ...condTxt(I.R)];
+      return `Mình hiểu là: ${BOT.last.show}.<ol>${c.length ? `<li>Ghi điều kiện: ${c.join("; ")}.</li>` : ""}<li>Chuyển vế về dạng <i>biểu thức so với 0</i>; nếu là phân số, xét dấu tử và mẫu (mẫu dương thì chỉ xét tử).</li><li>${Mi("√{x} < k ⇔ 0 ≤ x < k²; √{x} > k ⇔ x > k² (k ≥ 0)")}.</li><li>Kết hợp với điều kiện.</li></ol>Em gõ kết quả, ví dụ <i>0 ≤ x < 9</i> hoặc <i>x > 4</i>, mình kiểm tra.`; }
+    return null; }
+  if (T.kind === "simp" && A.kind === "expr" && hasVar(A.n)) { BOT.last = {kind: "simp", n: A.n, E, tries: 0};
+    const c = condTxt(A.n);
+    return `Mình hiểu là cần rút gọn: ${Mi(toM(A.n))}.<ol><li>Điều kiện: ${c.join("; ") || "không cần"}.</li><li>Phân tích các mẫu thành nhân tử, ví dụ ${Mi("x − 1 = (√{x} − 1)(√{x} + 1)")}, ${Mi("x − 2√{x} = √{x}(√{x} − 2)")}.</li><li>Quy đồng, bỏ ngoặc cẩn thận dấu trừ, thu gọn tử.</li><li>Rút gọn nhân tử chung.</li></ol>Em gõ kết quả em được (ví dụ <i>(căn x + 1)/(căn x − 2)</i>), hoặc gõ từng bước <i>A = B</i>, mình kiểm tra.`; }
+  if (T.kind === "cmp") { const pr = T.body.split(/\s+(?:và|với|va)\s+|;/).map(x => tryParse(x)).filter(Boolean);
+    if (pr.length === 2 && !pr.some(hasVar)) { const [A1, B1] = pr; BOT.last = {kind: "cmp", A: A1, B: B1, tries: 0};
+      return `So sánh ${Mi(toM(A1))} và ${Mi(toM(B1))}:<ul><li>Đưa thừa số vào trong dấu căn để hai số cùng dạng √{…}, rồi so sánh số dưới căn.</li><li>Hoặc bình phương hai số <b>không âm</b>: số nào có bình phương lớn hơn thì lớn hơn.</li></ul>Em gõ kết quả, ví dụ <i>${esc(T.body.split(/\s+(?:và|với|va)\s+|;/)[0])} &gt; ...</i>`.replace("√{…}", Mi("√{…}")); }
+    return null; }
+  if (T.kind === "dk" && A.kind === "expr") { const n = A.n; if (!hasVar(n)) return null; BOT.last = {kind: "set", f: x => isFinite(ev(n, {x, a: x, b: x})), what: "điều kiện xác định", tries: 0, show: Mi(toM(n))};
+    const c = condTxt(n);
+    return `Biểu thức ${Mi(toM(n))} xác định khi: ${c.join(" và ")}.<br>Em giải các điều kiện đó rồi gõ kết quả (ví dụ <i>x ≥ 0 và x ≠ 4</i>), mình kiểm tra.`; }
+  if (T.kind === "calc" && A.kind === "expr" && !hasVar(A.n)) return null; // để phần tính số xử lý
+  return null;
+}
+function checkLast(t) {
+  const L = BOT.last; if (!L || !L.kind) return null;
+  if (L.kind === "solve") {
+    let vals = listVals(t.replace(/x\s*=\s*/gi, "")); if (!vals) { const A = analyze(t); const n = A.kind === "eq" && A.parts.length === 2 && A.parts[0].t === "var" ? A.parts[1] : A.kind === "expr" ? A.n : null; if (!n || hasVar(n)) return null; vals = [ev(n, {})]; }
+    const rs = roots(L.L, L.R), lines = vals.map(v => { const a = ev(L.L, {x: v}), b = ev(L.R, {x: v});
+      return isNaN(a) || isNaN(b) ? `✗ x = ${vn(v)}: biểu thức không xác định, phải loại (đối chiếu điều kiện).` : Math.abs(a - b) < 1e-7 ? `✓ x = ${vn(v)}: hai vế đều bằng ${vn(a)}.` : `✗ x = ${vn(v)}: vế trái = ${vn(a)}, vế phải = ${vn(b)}, chưa bằng nhau.`; });
+    const ok = vals.every(v => rs.some(r => Math.abs(r - v) < 1e-6)) && rs.every(r => vals.some(v => Math.abs(r - v) < 1e-6));
+    if (ok) { BOT.last = null; return lines.join("<br>") + "<br><b>Đúng rồi!</b> Em nhớ kết luận và ghi rõ đã đối chiếu điều kiện."; }
+    L.tries++; const miss = vals.every(v => rs.some(r => Math.abs(r - v) < 1e-6)) && rs.length > vals.length;
+    if (L.tries >= 3) { BOT.last = null; return lines.join("<br>") + `<br>Mình hướng dẫn chi tiết: phương trình có ${rs.length ? "nghiệm " + rs.map(r => "x = " + vn(r)).join("; ") : "<b>không có nghiệm</b> thỏa mãn"}. Em thử giải lại theo các bước ở trên để ra đúng kết quả này nhé.`; }
+    return lines.join("<br>") + (miss ? "<br>Các giá trị em tìm đều đúng, nhưng <b>còn thiếu nghiệm</b>. Em xem lại các trường hợp." : `<br>Em kiểm tra lại từng bước (lần ${L.tries}/3). Hay gặp: bình phương sai, quên điều kiện, chuyển vế sai dấu.`); }
+  if (L.kind === "simp") { const A = analyze(t.replace(/^\s*=\s*/, "")); const n = A.kind === "expr" ? A.n : A.kind === "eq" ? A.parts[A.parts.length - 1] : null; if (!n) return null;
+    if (A.kind === "eq") { const r = verifyEq([L.n, ...A.parts], L.E, ""); if (!r.ok) { L.tries++; return r.h + "<br>Em xem lại bước chưa đúng nhé."; } }
+    if (sameVal(L.n, n, L.E)) { if (simple(n) || n.t === "/") { BOT.last = null; return `✓ Đúng rồi: ${Mi(toM(L.n))} = ${Mi(toM(n))}. Em nhớ ghi điều kiện ở đầu bài.`; } return `Kết quả em viết bằng biểu thức ban đầu, nhưng em rút gọn thêm được nữa (rút gọn nhân tử chung).`; }
+    L.tries++; const e = L.E.find(en => !isNaN(ev(L.n, en)) && !isNaN(ev(n, en)));
+    return `Chưa đúng: ${e ? `thử x = ${vn(e.x)}, biểu thức ban đầu bằng ${vn(ev(L.n, e))}, còn kết quả của em bằng ${vn(ev(n, e))}.` : "hai biểu thức không bằng nhau."} Em xem lại bước quy đồng và bỏ ngoặc (lần ${L.tries}).<br>${Mi(KNOW.L9)}`; }
+  if (L.kind === "cmp") { const low = t.toLowerCase(); let rel = null; const A = analyze(t);
+    if (A.kind === "ineq" && !hasVar(A.L) && !hasVar(A.R)) { const a = ev(A.L, {}), b = ev(A.R, {}), x = ev(L.A, {}), y = ev(L.B, {}); const same = Math.abs(a - x) < 1e-9 && Math.abs(b - y) < 1e-9, swap = Math.abs(a - y) < 1e-9 && Math.abs(b - x) < 1e-9; if (!same && !swap) return null;
+      const op = swap ? {">": "<", "<": ">", ">=": "<=", "<=": ">=", "!=": "!="}[A.op] : A.op; rel = op; }
+    else if (/lớn hơn|>/.test(low)) rel = ">"; else if (/nhỏ hơn|bé hơn|</.test(low)) rel = "<"; else if (/bằng|=/.test(low)) rel = "=";
+    if (!rel) return null; const x = ev(L.A, {}), y = ev(L.B, {}), truth = Math.abs(x - y) < 1e-9 ? "=" : x > y ? ">" : "<";
+    if (rel.replace("=", "") === truth.replace("=", "") || rel === truth) { BOT.last = null; return `✓ Đúng: ${Mi(toM(L.A))} ${truth} ${Mi(toM(L.B))}. Em trình bày lại cách so sánh (đưa vào trong căn hoặc bình phương) nhé.`; }
+    L.tries++; return L.tries >= 3 ? (BOT.last = null, `Chưa đúng. Hướng dẫn: ${Mi(toM(L.A))}² = ${vn(x * x)}, ${Mi(toM(L.B))}² = ${vn(y * y)}${x >= 0 && y >= 0 ? ", hai số đều không âm nên số nào có bình phương lớn hơn thì lớn hơn" : ""}.`) : `Chưa đúng. Em bình phương hai số (nếu không âm) hoặc đưa thừa số vào trong căn rồi so sánh lại (lần ${L.tries}/3).`; }
+  if (L.kind === "set") { const C = chain(t.replace(/\s+và\s+|;/g, " ; ")) || chainAnd(t); if (!C) return null;
+    if (sameSetFn(L.f, C.f)) { BOT.last = null; return `✓ Đúng rồi! ${L.what === "điều kiện xác định" ? "Đó chính là điều kiện xác định." : "Em kết luận tập giá trị của x như vậy là đúng."}`; }
+    L.tries++; const bad = XS.find(x => !!L.f(x) !== !!C.f(x)); const bx = Math.round(bad * 100) / 100;
+    return `Chưa đúng: thử x = ${vn(bx)}, ${L.f(bad) ? "giá trị này thỏa mãn nhưng kết quả của em lại loại nó" : "giá trị này không thỏa mãn nhưng kết quả của em vẫn nhận nó"}. Em xem lại ${L.what === "điều kiện xác định" ? "dấu ≥ hay >, và các giá trị làm mẫu bằng 0" : "chiều bất đẳng thức khi chia cho số âm, và điều kiện x ≥ 0"} (lần ${L.tries}).`; }
+  return null;
+}
+function chainAnd(t) { // "x ≥ 0 và x ≠ 4"
+  const parts = t.split(/\s+và\s+|;|,/).map(x => x.trim()).filter(Boolean); if (parts.length < 2) return null;
+  const C = parts.map(chain); if (C.some(c => !c)) return null; return {f: x => C.every(c => c.f(x))}; }
 function free(t, low, want) {
+  const T = task(t);
+  if (T.kind && T.kind !== "calc") { const h = taskStart(T, want); if (h) return h; }
+  if (BOT.last && BOT.last.kind) { const h = checkLast(t); if (h) return h; }
   const lv = listVals(t);
-  const A = lv ? {kind: "none"} : analyze(t);
+  const A = lv ? {kind: "none"} : analyze(T.kind === "calc" ? T.body : t);
+  if (A.kind === "eq" && A.parts.length === 2 && A.parts.some(hasVar) && A.parts.some(p => !hasVar(p))) { const h = taskStart({kind: "solve", body: t, cond: ""}); if (h) return h; }
   if (A.kind === "eq") { const E = envs(t), r = verifyEq(A.parts, E, t), hv = A.parts.some(hasVar);
     BOT.last = null; return r.h + (r.ok ? `<br>${hv ? "Đẳng thức đúng với các giá trị làm biểu thức xác định mà mình thử." : "Em làm đúng rồi! 👍"}` : "<br>Em sửa lại rồi gõ cho mình kiểm tra nhé."); }
   if (A.kind === "expr") {
@@ -1074,7 +1168,7 @@ function free(t, low, want) {
       return show + `.${tip}<br>Nếu em cần <b>điều kiện xác định</b>: ${[...rads.map(r => Mi(toM(r)) + " ≥ 0"), ...dens.map(d => Mi(toM(d)) + " ≠ 0")].join("; ") || "biểu thức này không có căn hay mẫu chứa biến"}.<br>Nếu em cần <b>rút gọn</b>, em gõ từng bước dạng <i>A = B</i>, mình kiểm tra từng dấu bằng.`; }
     if (!simple(n) || n.t === "sqrt") {
       const neg = negRad(n, {}); if (neg) return show + `.${tip}<br>Biểu thức dưới căn ${Mi(toM(neg))} có giá trị âm nên căn bậc hai <b>không xác định</b>. Căn bậc ba thì vẫn tính được với số âm.`;
-      BOT.last = {n, tries: 0};
+      BOT.last = {n, tries: 0, kind: null};
       return show + `.${tip}<br>${hintFor(n)}<br>Em tính thử rồi gõ kết quả, mình kiểm tra cho.`; }
     if (BOT.last) { const L = BOT.last, v = ev(n, {}), w = ev(L.n, {});
       if (Math.abs(v - w) < 1e-7) { BOT.last = null; return `✓ Đúng rồi: ${Mi(toM(L.n))} = ${Mi(toM(n))}. Giỏi lắm!`; }
@@ -1087,9 +1181,9 @@ function free(t, low, want) {
   if (hit) return (want ? "Mình không đưa đáp án, nhưng cùng em làm từng bước nhé.<br>" : "") + Mi(hit.a);
   if (want) return "Mình không đưa đáp án ngay, nhưng sẽ gợi ý để em tự làm được. Em gõ đề hoặc phép tính (ví dụ <i>căn 75 chia căn 3</i>) và cho mình biết em đã làm đến đâu nhé.";
   if (HELP.test(low)) return `Em gõ phép tính đang làm, mình gợi ý cách tính. Ví dụ: <i>căn 0,49</i>, <i>căn bậc ba của −27</i>, <i>căn 2 nhân căn 50</i>, <i>1/(căn 5 + 2)</i>. Muốn hỏi một câu trong bài luyện tập, em bấm nút <b>Hỏi trợ lý</b> ngay dưới câu đó.`;
-  return `Mình chưa hiểu ý em. Mình giúp được:<ul><li>Gõ phép tính để mình gợi ý: <i>căn 0,49</i>, <i>căn(0,32 − 0,04)</i>, <i>căn bậc ba của −8</i>.</li><li>Gõ một bước để mình kiểm tra: <i>căn 0,49 = 0,7</i>.</li><li>Hỏi kiến thức: điều kiện xác định, căn bậc ba, trục căn thức, rút gọn...</li></ul>`;
+  return `Mình chỉ giúp được bài chương Căn bậc hai và căn bậc ba. Em thử gõ theo một trong các cách:<ul><li><i>tìm x để căn(x − 1) = 3</i> hoặc <i>tìm x để căn x &lt; 3</i></li><li><i>rút gọn (x − 1)/(căn x + 1)</i></li><li><i>căn(x − 2) xác định khi nào</i></li><li><i>so sánh 3căn2 và 2căn3</i></li><li><i>căn 0,49</i> hoặc kiểm tra một bước: <i>căn 0,49 = 0,7</i></li><li>Hỏi kiến thức: căn bậc ba, trục căn thức, đưa thừa số ra ngoài...</li></ul>Phân số gõ dạng <i>(a)/(b)</i> hoặc bấm nút ${Mi("\\f{a}{b}")} bên dưới.`;
 }
-function scopeTip(n, sc) { if (!sc || !["+", "-", "*", "/"].includes(n.t) || !["sqrt", "cbrt"].includes(n.a.t) || n.a.br) return "";
+function scopeTip(n, sc) { if (!sc || !["+", "-", "*", "/"].includes(n.t) || !["sqrt", "cbrt"].includes(n.a.t) || n.a.br || hasSqrtIn(n.b)) return "";
   const alt = {t: n.a.t, a: {t: n.t, a: n.a.a, b: n.b}}, plain = toM(alt.a).replace(/√\{/g, "căn(").replace(/∛\{/g, "căn bậc ba(").replace(/}/g, ")").replace(/\\f\{([^}]*)\}\{([^}]*)\}/g, "($1)/($2)");
   return `<div class="tipbox">Nếu em muốn ${Mi(toM(alt))} thì gõ có ngoặc: <i>${n.a.t === "sqrt" ? "căn" : "căn bậc ba"}(${esc(plain)})</i>.</div>`; }
 function hintFor(n) { // kiến thức cần dùng cho phép tính số
@@ -1104,6 +1198,8 @@ function hintFor(n) { // kiến thức cần dùng cho phép tính số
   if (n.t === "/" && has("sqrt")) return Mi(KNOW.L7);
   let nsq = 0; walk(n, x => { if (x.t === "sqrt") nsq++; });
   if ((n.t === "+" || n.t === "-") && nsq === 1) return "Thứ tự tính: khai căn trước, rồi mới cộng, trừ." + (decRad ? " " + Mi(KNOW.L6) : "");
+  const rads = []; walk(n, x => { if (x.t === "sqrt") rads.push(ev(x.a.t === "par" ? x.a.a : x.a, {})); });
+  if ((n.t === "+" || n.t === "-") && rads.length && rads.every(v => isI(Math.sqrt(v * 10000)) && v >= 0)) return "Khai căn từng số trước (mỗi số dưới căn đều khai căn được), rồi mới cộng, trừ." + (decRad ? " " + Mi(KNOW.L6) : "");
   if ((n.t === "+" || n.t === "-") && has("sqrt")) return Mi("Đưa các căn về cùng dạng a√{b} (đưa thừa số ra ngoài), rồi cộng trừ các hệ số.") + "<br>" + Mi(KNOW.L5);
   return decRad ? Mi(KNOW.L6) : "Em tính lần lượt: trong ngoặc, căn, nhân chia, rồi cộng trừ.";
 }
@@ -1115,15 +1211,20 @@ function solveSteps(n) { // hướng dẫn chi tiết cho phép tính số (sau 
 function bot() {
   if (!chat.length) botSay(`Chào ${esc(S.name || "em")}! Mình là trợ lý gợi ý chương Căn thức. Mình không đưa đáp án ngay, mà kiểm tra từng bước em làm và gợi ý tiếp. Em gõ chữ <b>căn</b> thay cho dấu √ cũng được, hoặc dùng bàn phím toán bên dưới.`);
   const C = BOT.ctx;
-  const quick = C && !C.done ? ["gợi ý", "Em không hiểu đề", "Cho em đáp án", "thoát"] : ["căn 0,49", "căn(0,32 − 0,04)", "căn bậc ba của −27", "Khi nào căn A xác định?", "Căn bậc hai và căn bậc ba khác nhau thế nào?"];
+  const quick = C && !C.done ? ["gợi ý", "Em không hiểu đề", "Cho em đáp án", "thoát"] : ["căn 0,49", "tìm x để căn(x − 1) = 3", "rút gọn (x − 1)/(căn x + 1)", "so sánh 3căn2 và 2căn3", "căn(x − 2) xác định khi nào", "Căn bậc hai và căn bậc ba khác nhau thế nào?"];
   app.innerHTML = back(C ? "lesson" : "home", C ? "← Về bài đang làm" : "← Lộ trình") + `<div class="pane"><h1>Trợ lý gợi ý</h1>${C ? `<p class="note">Đang hỗ trợ: ${LABEL[C.n]} · Câu ${C.i + 1}. Gõ <b>thoát</b> để hỏi chuyện khác.</p>` : `<p class="note">Hỏi kiến thức, gõ phép tính hoặc một bước em làm. Muốn hỏi một câu trong bài, bấm "Hỏi trợ lý" ngay dưới câu đó.</p>`}
   <div class="chat" id="cbox" aria-live="polite">${chat.map(m => `<div class="bub ${m.me ? "me" : "bot"}">${m.h}</div>`).join("")}</div>
   <div class="chips">${quick.map(q => `<button data-quick="${esc(q)}">${esc(q)}</button>`).join("")}</div>
-  <div class="keys" aria-label="Bàn phím toán">${[["√( )","√()"],["∛( )","∛()"],["x²","²"],["( )","()"],["| |","||"],["≥","≥"],["≤","≤"],["−","−"],[":",":"]].map(([l, v]) => `<button data-key="${esc(v)}">${esc(l)}</button>`).join("")}</div>
-  <form class="send" id="sf"><label for="mi" hidden>Tin nhắn</label><textarea id="mi" placeholder="Ví dụ: căn 0,49 = 0,7 · căn(0,32 − 0,04) · gợi ý"></textarea><button class="btn">Gửi</button></form></div>`;
+  <div class="keys" aria-label="Bàn phím toán">${[["√( )","√()"],["∛( )","∛()"],["a/b","()/()"],["x²","²"],["( )","()"],["| |","||"],["≥","≥"],["≤","≤"],["≠","≠"],["−","−"]].map(([l, v]) => `<button data-key="${esc(v)}" aria-label="${l === "a/b" ? "phân số" : esc(l)}">${l === "a/b" ? Mi("\\f{a}{b}") : esc(l)}</button>`).join("")}</div>
+  <div class="pv" id="pv" aria-live="polite"></div>
+  <form class="send" id="sf"><label for="mi" hidden>Tin nhắn</label><textarea id="mi" placeholder="Ví dụ: tìm x để căn x = 5 · rút gọn (x − 1)/(căn x + 1) · căn 0,49 = 0,7"></textarea><button class="btn">Gửi</button></form></div>`;
   const cb = document.getElementById("cbox"); cb.scrollTop = cb.scrollHeight;
   const mi = document.getElementById("mi");
   document.getElementById("sf").onsubmit = e => { e.preventDefault(); const v = mi.value.trim(); if (v) send(v); };
+  const pv = document.getElementById("pv");
+  mi.oninput = () => { const v = mi.value.trim(); if (!v) return pv.innerHTML = ""; const T = task(v), A = analyze(T.body || v); let h = "";
+    if (A.kind === "expr") h = Mi(toM(A.n)); else if (A.kind === "eq") h = A.parts.map(p => Mi(toM(p))).join(" = "); else if (A.kind === "ineq") h = Mi(toM(A.L)) + " " + A.op.replace(">=", "≥").replace("<=", "≤").replace("!=", "≠") + " " + Mi(toM(A.R));
+    pv.innerHTML = h ? `<span class="note">Trợ lý sẽ đọc là:</span> ${h}` : ""; };
   mi.onkeydown = e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); const v = mi.value.trim(); if (v) send(v); } };
 }
 function send(t) { meSay(t); let h; try { h = botReply(t); } catch (e) { h = "Mình chưa đọc được câu này. Em gõ lại theo cách khác nhé, ví dụ <i>căn(16 + 9)</i>."; } botSay(h || "Em gõ lại giúp mình nhé."); bot(); setTimeout(() => document.getElementById("mi")?.focus(), 0); }
@@ -1216,7 +1317,7 @@ app.addEventListener("click", e => {
   else if (d.gs !== undefined) { const W = GW[CUR + ":" + d.gs]; W.sol = !W.sol; if (W.sol) { W.used = true; W.ord = []; } document.getElementById("gq-" + d.gs).outerHTML = gq(+d.gs); }
   else if (d.gagain !== undefined) { const g = LES[CUR].gh[+d.gagain], k = ghNew(g); k.again = true; GW[CUR + ":" + d.gagain] = k; document.getElementById("gq-" + d.gagain).outerHTML = gq(+d.gagain); }
   else if (d.quick) send(d.quick);
-  else if (d.key) { const mi = document.getElementById("mi"), s = mi.selectionStart, v = d.key; mi.value = mi.value.slice(0, s) + v + mi.value.slice(mi.selectionEnd); const c = s + (v.endsWith("()") || v === "||" ? v.length - 1 : v.length); mi.focus(); mi.setSelectionRange(c, c); }
+  else if (d.key) { const mi = document.getElementById("mi"), s = mi.selectionStart, v = d.key; mi.value = mi.value.slice(0, s) + v + mi.value.slice(mi.selectionEnd); const c = s + (v === "()/()" ? 1 : v.endsWith("()") || v === "||" ? v.length - 1 : v.length); mi.focus(); mi.setSelectionRange(c, c); mi.oninput && mi.oninput(); }
   else if (d.e !== undefined) { exam.pick[exam.ord[exam.i]] = +d.e; examView(); }
   else if (d.ds) { const [j, v] = d.ds.split(":").map(Number), k = exam.ord[exam.i]; const a = exam.pick[k] || (exam.pick[k] = [null, null, null, null]); a[j] = v === 1; examView(); }
   else if (d.ta) { const k = exam.ord[exam.i]; (exam.pick[k] = exam.pick[k] || []).push(d.ta); examView(); }
