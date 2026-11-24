@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TOÁN 9 - CĂN BẬC HAI VÀ CĂN BẬC BA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday study app for Grade 9, calm and clear
+   IDEA a class workbook app: pick your name, watch, answer, check off
+   PICTURE the video player with its watched-bar and question markers; the exam sheet with its number grid
+   COLOUR Edison navy #326383 field, orange #F9AF28 action, green done, red wrong
+   TYPE Be Vietnam Pro; radicals drawn so the bar covers the whole expression
+   LAYOUT top bar; one main column; exam = question left, number grid right, stacked on phone */
+:root{color-scheme:light dark;--bg:light-dark(#f3f6f9,#0f1a22);--pane:light-dark(#ffffff,#162531);--ink:light-dark(#17222b,#e8eef2);--soft:light-dark(#5b6872,#9fb0bc);--line:light-dark(#dde4ea,#2a3a46);--navy:#326383;--or:#F9AF28;--ok:light-dark(#3d7a1f,#8fd16a);--okbg:light-dark(#eaf3e0,#1c2e17);--no:light-dark(#c00000,#ff7a7a);--nobg:light-dark(#fbe7e7,#3a1a1a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 "Be Vietnam Pro",system-ui,sans-serif;overflow-x:clip}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:1100px;margin:0 auto;padding:0 max(4vw,16px)}
+.top{background:var(--navy);color:#fff}
+.top .wrap{display:flex;align-items:center;gap:10px;min-height:58px;flex-wrap:wrap}
+.top b{margin-right:auto;font-weight:800}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:#ffffff22;font-size:14px;white-space:nowrap;color:#fff;border:0;min-height:34px}
+.demo{background:#fff4dc;color:#6b4a00;font-size:14px;text-align:center;padding:6px 12px}
+.pane{background:var(--pane);border:1px solid var(--line);border-radius:16px;padding:20px;margin:18px 0}
+h1{font-size:clamp(26px,3.6vw,38px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px}
+h2{font-size:22px;margin:0 0 10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:10px 20px;border-radius:12px;border:0;background:var(--navy);color:#fff;font-weight:700}
+.btn.or{background:var(--or);color:#17222b}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,select:focus-visible,.opt:focus-visible,.num:focus-visible,textarea:focus-visible{outline:3px solid var(--or);outline-offset:2px}
+select,textarea{font:inherit;font-size:16px;padding:12px;border-radius:12px;border:2px solid var(--line);background:var(--pane);color:var(--ink);width:100%}
+.login{max-width:460px;margin:7vh auto}
+.note{font-size:14px;color:var(--soft)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.ring{display:flex;gap:18px;align-items:center}
+.chang{font-size:15px;color:var(--soft);margin:20px 0 4px;font-weight:700}
+.lesson{display:grid;grid-template-columns:3em minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 0;border-top:1px solid var(--line)}
+.lesson.test{background:color-mix(in srgb,var(--or) 10%,transparent);border-radius:12px;padding-inline:10px}
+.lesson .n{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--line)}
+.lesson.on .n{background:var(--or);color:#17222b}.lesson.done .n{background:var(--ok);color:#fff}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.step{font-size:13px;padding:2px 10px;border-radius:999px;background:var(--bg);color:var(--soft)}
+.step.ok{background:var(--okbg);color:var(--ok);font-weight:700}
+/* công thức: dấu căn kéo hết biểu thức, phân số hai tầng */
+.rad{display:inline-flex;align-items:stretch;position:relative;vertical-align:middle;white-space:nowrap;margin:0 .06em}
+.rad.cb{margin-left:.38em}
+.rad .rs{width:.62em;flex:none;overflow:visible}
+.rad .rs path{fill:none;stroke:currentColor;stroke-width:1.5px;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.rad .rc{border-top:1.5px solid currentColor;padding:.12em .14em 0 .06em;display:inline-flex;align-items:center}
+.rad .idx{position:absolute;left:-.32em;top:-.05em;font-size:.6em;line-height:1}
+.fr{display:inline-flex;flex-direction:column;align-items:stretch;vertical-align:middle;font-size:.9em;margin:0 .12em;line-height:1.25}
+.fr>span{display:flex;align-items:center;justify-content:center;padding:.06em .2em}
+.fr>span:first-child{border-bottom:1.4px solid currentColor}
+.player{position:relative;background:#000;border-radius:14px;overflow:hidden;aspect-ratio:16/9}
+.player video{width:100%;height:100%;display:block}
+.ov{position:absolute;inset:0;background:#0d1a24ee;color:#fff;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.ov .box{max-width:620px;width:100%}
+.ov .opt{background:#ffffff14;color:#fff;border-color:#ffffff40}
+.ctr{display:flex;align-items:center;gap:12px;padding:10px 0}
+.bar{position:relative;flex:1;height:14px;border-radius:9px;background:var(--line);cursor:pointer}
+.bar .seen{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:color-mix(in srgb,var(--navy) 45%,transparent)}
+.bar .cur{position:absolute;left:0;top:0;bottom:0;border-radius:9px;background:var(--navy)}
+.bar .mk{position:absolute;top:-4px;width:10px;height:22px;margin-left:-5px;border-radius:4px;background:var(--or);border:2px solid var(--pane)}
+.bar .mk.ok{background:var(--ok)}
+.time{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:14px;color:var(--soft)}
+.play{width:46px;height:46px;border-radius:50%;border:0;background:var(--navy);color:#fff;font-size:18px;flex:none}
+.msg{min-height:24px;font-size:14px;color:var(--no)}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:8px;margin-top:10px}
+.opt{min-height:52px;text-align:left;padding:10px 14px;border-radius:12px;border:2px solid var(--line);background:var(--pane);color:var(--ink);font-size:17px;display:flex;align-items:center;gap:8px}
+.opt .ot{flex:1;min-width:0}
+.opt.sel{border-color:var(--navy);background:color-mix(in srgb,var(--navy) 14%,var(--pane))}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}.opt.no{border-color:var(--no);background:var(--nobg)}
+.ov .opt.ok{background:#3d7a1f;border-color:#8fd16a}.ov .opt.no{background:#7a1f1f;border-color:#ff9a9a}
+.qt{font-size:18px;font-weight:600;line-height:2}
+.fb{margin-top:10px;font-size:15px}
+.hintbox{margin-top:10px;padding:10px 14px;border-radius:12px;background:#fff4dc;color:#4a3300;font-size:15px}
+.lock{text-align:center;padding:28px;border:2px dashed var(--line);border-radius:16px;color:var(--soft)}
+.exam{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px;align-items:start}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.num{aspect-ratio:1;border-radius:10px;border:2px solid var(--line);background:var(--pane);color:var(--ink);font-weight:700}
+.num.done{background:var(--navy);color:#fff;border-color:var(--navy)}
+.num.flag{border-color:var(--or);box-shadow:inset 0 -4px 0 var(--or)}
+.num.cur{outline:3px solid var(--or);outline-offset:1px}
+.timer{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--navy)}
+.timer.low{color:var(--no)}
+.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal .pane{max-width:440px;width:100%}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#17222b;color:#fff;padding:10px 18px;border-radius:12px;font-size:15px;z-index:10;max-width:92vw}
+.big{font-size:clamp(44px,7vw,64px);font-weight:800;line-height:1;color:var(--navy)}
+.code{display:inline-block;font-weight:800;padding:1px 8px;border-radius:8px;background:var(--no);color:#fff;margin-right:6px;font-size:14px}
+.chat{display:flex;flex-direction:column;gap:10px;min-height:340px;max-height:58vh;overflow:auto;padding:14px;border-radius:14px;background:var(--bg)}
+.bub{max-width:88%;padding:10px 14px;border-radius:14px;line-height:1.9}
+.bub.me{align-self:flex-end;background:var(--navy);color:#fff;border-bottom-right-radius:4px}
+.bub.bot{align-self:flex-start;background:var(--pane);border:1px solid var(--line);border-bottom-left-radius:4px}
+.bub ol,.bub ul{margin:4px 0;padding-left:20px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.chips button{min-height:40px;padding:6px 14px;border-radius:999px;border:1.5px solid var(--navy);background:var(--pane);color:var(--ink);font-size:14px}
+.send{display:flex;gap:8px}
+.send textarea{min-height:52px;resize:vertical}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr));gap:12px}
+.kpi div{background:var(--bg);border-radius:12px;padding:14px}
+.kpi b{display:block;font-size:30px;line-height:1.1;color:var(--navy)}
+.brow{display:grid;grid-template-columns:minmax(0,13em) minmax(0,1fr) 4.5em;gap:10px;align-items:center;margin:8px 0;font-size:15px}
+.brow .m{height:14px;border-radius:8px;background:var(--line);overflow:hidden}.brow .m i{display:block;height:100%;background:var(--ok)}
+.brow span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+td.r,th.r{text-align:right}
+.tag{display:inline-block;padding:1px 8px;border-radius:8px;font-size:13px;font-weight:700}
+.tag.ok{background:var(--okbg);color:var(--ok)}.tag.no{background:var(--nobg);color:var(--no)}.tag.mid{background:#fff4dc;color:#6b4a00}
+@media(max-width:760px){.exam{grid-template-columns:minmax(0,1fr)}.exam aside{order:-1}.grid{grid-template-columns:repeat(6,minmax(0,1fr))}.brow{grid-template-columns:minmax(0,1fr) 4em}.brow .m{grid-column:1/-1;order:3}}
+
+.btn.sm{min-height:40px;padding:6px 14px;font-size:15px}
+.item{padding:14px 0;border-top:1px solid var(--line)}
+.item:first-of-type{border-top:0}
+.fb.okc,.okc{color:var(--ok)}.noc{color:var(--no)}
+.step.lockt{background:transparent;color:var(--soft)}.step.bad{background:var(--nobg);color:var(--no);font-weight:700}
+.rules{margin-top:12px;font-size:15px}.rules summary{cursor:pointer;font-weight:700;color:var(--navy)}.rules ol{margin:8px 0 0;padding-left:22px}
+.warn{background:#fff4dc;color:#4a3300;border-color:#f3d27c}
+.ghans{list-style:decimal;margin:6px 0 12px;padding-left:28px;display:flex;flex-direction:column;gap:6px}
+.ghans li.empty{list-style:none;margin-left:-28px;padding:14px;border:2px dashed var(--line);border-radius:12px;color:var(--soft);font-size:15px}
+.pool{display:flex;flex-direction:column;gap:6px;margin:6px 0}
+.card{display:flex;align-items:center;gap:10px;width:100%;text-align:left;min-height:48px;padding:8px 12px;border-radius:12px;border:2px solid var(--line);background:var(--pane);color:var(--ink);font-size:17px;line-height:2}
+.pool .card{border-style:dashed}.pool .card:hover{border-color:var(--navy)}
+.ghans .card{background:color-mix(in srgb,var(--navy) 8%,var(--pane));border-color:color-mix(in srgb,var(--navy) 40%,var(--line))}
+.card .x{margin-left:auto;color:var(--soft);font-size:14px}
+.card.ok{border-color:var(--ok);background:var(--okbg)}.card.no{border-color:var(--no);background:var(--nobg)}
+.ghsol{margin:6px 0;padding-left:26px;line-height:2.1}
+.banner{margin-top:14px;padding:12px 16px;border-radius:12px;font-size:16px}.banner.ok{background:var(--okbg);color:var(--ok)}.banner.no{background:var(--nobg);color:var(--no)}
+table.ds{margin-top:12px;font-size:16px}table.ds td{white-space:normal;line-height:2;vertical-align:middle}table.ds .c{text-align:center}
+.tf{width:44px;height:44px;border-radius:10px;border:2px solid var(--line);background:var(--pane);color:var(--ink);font-weight:800}
+.tf.sel{background:var(--navy);border-color:var(--navy);color:#fff}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:14px}
+.rv{padding:14px 0;border-top:1px solid var(--line)}
+.qbox{margin:8px 0;padding:10px 12px;border-radius:12px;background:var(--bg);line-height:2.1}
+.qbox .mini{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:15px}
+.know{margin-top:8px;padding:8px 12px;border-left:4px solid var(--navy);background:color-mix(in srgb,var(--navy) 7%,transparent);border-radius:0 10px 10px 0;font-size:15px}
+.tipbox{margin-top:6px;font-size:14px;color:var(--soft)}
+.keys{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.keys button{min-width:48px;min-height:42px;border-radius:10px;border:1.5px solid var(--line);background:var(--pane);color:var(--ink);font-size:17px}
+.bub .code{font-size:13px}
+.kk{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;background:#efe6ff;color:#5b2ca0;vertical-align:middle}
+.lesson.xtra{border-top:1px dashed var(--line)}.lesson.xtra .n{background:transparent;border:2px dashed var(--line)}.lesson.xtra.on .n{border-color:var(--navy);color:var(--navy)}
+.sub{font-weight:600;color:var(--soft)}
+.vtabs{display:flex;flex-direction:column;gap:6px;margin:8px 0 14px}
+.vtab{display:flex;align-items:center;gap:10px;text-align:left;min-height:46px;padding:6px 12px;border-radius:12px;border:2px solid var(--line);background:var(--pane);color:var(--ink);font-size:16px}
+.vtab b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--bg);flex:none;font-size:14px}
+.vtab span{margin-left:auto;color:var(--soft);font-size:14px}.vtab.cur{border-color:var(--navy);background:color-mix(in srgb,var(--navy) 8%,var(--pane))}
+.scroll tr.off td{color:var(--soft)}
+.vtab.ok b{background:var(--okbg);color:var(--ok)}.vtab:disabled{opacity:.55}
+.card .ct{flex:1;min-width:0}
+table.ds td:first-child{width:2.2em}table.ds td.c{white-space:nowrap;width:1%}table.ds{table-layout:auto}
+</style>
+</head>
+<body>
+<div class="demo">Bản xem thử: dữ liệu lưu trên máy này. Bản thật tự ghi vào Google Sheet của cô.</div>
+<header class="top"><div class="wrap"><b>TOÁN 9 - CĂN BẬC HAI VÀ CĂN BẬC BA</b><button class="pill" id="botBtn" hidden>Trợ lý gợi ý</button><span class="pill" id="who"></span><span class="pill" id="sync" hidden>Đã lưu tiến độ</span></div></header>
+<main class="wrap" id="app"></main>
+<script>
+{
+/* ===== Bộ hiểu phép tính: gõ tự nhiên, không cần dấu căn ===== */
+const MATHWORDS = /^(sqrt|cbrt)$/;
+function grabB(s, p) { let d = 0; for (let q = p; q < s.length; q++) { if (s[q] === "{") d++; else if (s[q] === "}") { d--; if (!d) return [s.slice(p + 1, q), q + 1]; } } return [s.slice(p + 1), s.length]; }
+// kí hiệu soạn sẵn (√{..}, ∛{..}, \f{..}{..}) -> chữ để phân tích
+function mToTxt(s) {
+  let o = "", i = 0; s = String(s);
+  while (i < s.length) {
+    if ((s[i] === "√" || s[i] === "∛") && s[i + 1] === "{") { const [a, j] = grabB(s, i + 1); o += (s[i] === "√" ? " sqrt(" : " cbrt(") + mToTxt(a) + ")"; i = j; }
+    else if (s.startsWith("\\f{", i)) { const [a, j] = grabB(s, i + 2), [b, k] = grabB(s, j); o += "((" + mToTxt(a) + ")/(" + mToTxt(b) + "))"; i = k; }
+    else { o += s[i]; i++; }
+  }
+  return o;
+}
+function normIn(raw) {
+  let s = " " + String(raw).toLowerCase() + " ";
+  s = s.replace(/[−–—]/g, "-").replace(/[×·∙]/g, "*").replace(/÷/g, "/").replace(/²/g, "^2").replace(/³/g, "^3").replace(/[{\[]/g, "(").replace(/[}\]]/g, ")");
+  s = s.replace(/∛/g, " cbrt ").replace(/√/g, " sqrt ").replace(/≥/g, " >= ").replace(/≤/g, " <= ").replace(/≠/g, " != ");
+  const W = [
+    [/căn\s*bậc\s*(ba|3)(\s*của)?|can\s*bac\s*(ba|3)(\s*cua)?|cbrt/g, " cbrt "],
+    [/căn\s*bậc\s*(hai|2)(\s*của)?|can\s*bac\s*(hai|2)(\s*cua)?|căn(\s*của)?|(^|\s)can(\s*cua)?(?=[\s(\d-])|sqrt/g, " sqrt "],
+    [/bình\s*phương|binh\s*phuong/g, " ^2 "], [/lập\s*phương|lap\s*phuong/g, " ^3 "], [/(^|\s)(mũ|mu)(?=\s)/g, " ^ "],
+    [/lớn\s*hơn\s*hoặc\s*bằng/g, " >= "], [/(nhỏ|bé)\s*hơn\s*hoặc\s*bằng/g, " <= "], [/lớn\s*hơn/g, " > "], [/(nhỏ|bé)\s*hơn/g, " < "], [/(^|\s)khác(?=\s)/g, " != "],
+    [/(^|\s)(cộng|cong)(?=\s)/g, " + "], [/(^|\s)(trừ|tru)(?=\s)/g, " - "], [/(^|\s)(nhân|nhan)(\s*(với|voi))?(?=\s)/g, " * "],
+    [/(^|\s)(chia|chia\s*cho)(?=\s)/g, " / "], [/(^|\s)phần(?=\s)/g, " / "], [/(^|\s)(âm|am)(?=\s)/g, " - "],
+    [/mở\s*ngoặc/g, " ( "], [/đóng\s*ngoặc/g, " ) "], [/(^|\s)(bằng|bang)(?=\s)/g, " = "]];
+  for (const [r, t] of W) s = s.replace(r, t);
+  s = s.replace(/:/g, " / ").replace(/(\d),(\d)/g, "$1.$2");
+  // bỏ chữ tiếng Việt, giữ biến a, b, x, y và cụm biến như ab
+  s = s.replace(/[a-zà-ỹđ]+/g, w => MATHWORDS.test(w) ? ` ${w} ` : /^[abxy]{1,3}$/.test(w) ? " " + w.split("").join(" ") + " " : " ");
+  return s;
+}
+function tokenize(s) { return s.match(/\d+(?:\.\d+)?|\.\d+|sqrt|cbrt|[abxy]|>=|<=|!=|[-+*\/^()=|<>]/g) || []; }
+function parseExpr(tk) {
+  let p = 0; const peek = () => tk[p], next = () => tk[p++];
+  const starts = (k, stop) => k !== undefined && (/^[\d.]/.test(k) || /^[abxy]$/.test(k) || k === "sqrt" || k === "cbrt" || k === "(" || (k === "|" && !stop));
+  function expr(stop) { let n = term(stop); while (peek() === "+" || peek() === "-") { const op = next(); n = {t: op, a: n, b: term(stop)}; } return n; }
+  function term(stop) { let n = unary(stop); for (;;) { const k = peek(); if (k === "*" || k === "/") { next(); n = {t: k, a: n, b: unary(stop)}; } else if (starts(k, stop)) n = {t: "*", a: n, b: power(stop), imp: true}; else break; } return n; }
+  function unary(stop) { if (peek() === "-") { next(); return {t: "neg", a: unary(stop)}; } if (peek() === "+") { next(); return unary(stop); } return power(stop); }
+  function power(stop) { const b = primary(stop); if (peek() === "^") { next(); const e = peek() === "-" ? (next(), {t: "neg", a: primary(stop)}) : primary(stop); return {t: "^", a: b, b: e}; } return b; }
+  function primary(stop) { const k = next(); if (k === undefined) throw 0;
+    if (/^[\d.]/.test(k)) return {t: "num", v: parseFloat(k), s: k};
+    if (/^[abxy]$/.test(k)) return {t: "var", v: k};
+    if (k === "(") { const n = expr(false); if (next() !== ")") throw 0; return {t: "par", a: n}; }
+    if (k === "|") { const n = expr(true); if (next() !== "|") throw 0; return {t: "abs", a: n}; }
+    if (k === "sqrt" || k === "cbrt") { let r, br = false;
+      if (peek() === "(") { next(); r = expr(false); if (next() !== ")") throw 0; br = true;
+        if (peek() === "^") { next(); r = {t: "^", a: {t: "par", a: r}, b: primary(stop)}; } }
+      else { r = peek() === "-" ? (next(), {t: "neg", a: power(stop)}) : power(stop);
+        while (/^[abxy]$/.test(peek() || "")) r = {t: "*", a: r, b: power(stop), imp: true}; }
+      return {t: k, a: r, br}; }
+    throw 0; }
+  const n = expr(false); if (p < tk.length) throw 0; return n;
+}
+function ev(n, env) {
+  switch (n.t) {
+    case "num": return n.v; case "var": return env && n.v in env ? env[n.v] : NaN;
+    case "par": return ev(n.a, env); case "abs": return Math.abs(ev(n.a, env)); case "neg": return -ev(n.a, env);
+    case "+": return ev(n.a, env) + ev(n.b, env); case "-": return ev(n.a, env) - ev(n.b, env);
+    case "*": return ev(n.a, env) * ev(n.b, env); case "/": { const d = ev(n.b, env); return Math.abs(d) < 1e-12 ? NaN : ev(n.a, env) / d; }
+    case "^": return Math.pow(ev(n.a, env), ev(n.b, env));
+    case "sqrt": { const r = ev(n.a, env); return r < -1e-12 ? NaN : Math.sqrt(Math.max(0, r)); }
+    case "cbrt": return Math.cbrt(ev(n.a, env));
+  }
+  return NaN;
+}
+const hasVar = n => !n ? false : n.t === "var" || ["a", "b"].some(k => n[k] && typeof n[k] === "object" && hasVar(n[k]));
+function walk(n, f) { if (!n || typeof n !== "object") return; f(n); if (n.a && typeof n.a === "object") walk(n.a, f); if (n.b && typeof n.b === "object") walk(n.b, f); }
+const vn = x => { if (!isFinite(x)) return "?"; const r = Math.round(x * 1e6) / 1e6; return String(r).replace("-", "−").replace(".", ","); };
+// cây -> kí hiệu soạn sẵn để hiển thị bằng M()
+function toM(n, top = true) {
+  const w = (x, need) => need ? "(" + x + ")" : x;
+  switch (n.t) {
+    case "num": return n.s.replace(".", ","); case "var": return n.v;
+    case "par": return "(" + toM(n.a, false) + ")"; case "abs": return "|" + toM(n.a, false) + "|";
+    case "neg": return "−" + w(toM(n.a, false), n.a.t === "+" || n.a.t === "-");
+    case "+": return toM(n.a, false) + " + " + toM(n.b, false);
+    case "-": return toM(n.a, false) + " − " + w(toM(n.b, false), n.b.t === "+" || n.b.t === "-");
+    case "*": { const A = w(toM(n.a, false), n.a.t === "+" || n.a.t === "-"), B = w(toM(n.b, false), n.b.t === "+" || n.b.t === "-" || n.b.t === "neg");
+      return n.imp && !(n.a.t === "num" && n.b.t === "num") && !(n.b.t === "num") ? A + B : A + " · " + B; }
+    case "/": { const un = x => x.t === "par" ? x.a : x; return "\\f{" + toM(un(n.a), false) + "}{" + toM(un(n.b), false) + "}"; }
+    case "^": { const e = n.b.t === "num" && n.b.v === 2 ? "²" : n.b.t === "num" && n.b.v === 3 ? "³" : "^" + toM(n.b, false);
+      return w(toM(n.a, false), !["num", "var", "par", "abs", "sqrt", "cbrt"].includes(n.a.t)) + e; }
+    case "sqrt": return "√{" + toM(n.a.t === "par" ? n.a.a : n.a, false) + "}";
+    case "cbrt": return "∛{" + toM(n.a.t === "par" ? n.a.a : n.a, false) + "}";
+  }
+  return "?";
+}
+// mẫu giá trị thử cho biến, theo điều kiện ghi trong đề (vd "a < 0, b > 0", "x ≥ 0, x ≠ 4")
+function envs(stem) {
+  const C = {}; String(stem || "").replace(/([abxy])\s*(<|>|≤|≥|≠)\s*(−?\d+(?:,\d+)?)/g, (_, v, op, k) => { (C[v] = C[v] || []).push([op, parseFloat(k.replace("−", "-").replace(",", "."))]); });
+  const cand = [-5.3, -2.6, -0.7, 0.37, 1.6, 2.9, 5.7, 7.3, 11.3, 17.9];
+  const ok = (v, x) => (C[v] || []).every(([op, k]) => op === "<" ? x < k : op === ">" ? x > k : op === "≤" ? x <= k : op === "≥" ? x >= k : Math.abs(x - k) > 1e-9);
+  const pick = v => cand.filter(x => ok(v, x));
+  const A = pick("a"), B = pick("b"), X = pick("x"), Y = pick("y"), out = [];
+  for (let i = 0; i < 5; i++) out.push({a: A[i % A.length], b: B[(i + 1) % B.length], x: X[(i * 2 + 1) % X.length], y: Y[(i + 2) % Y.length]});
+  return out;
+}
+function tryParse(raw) { try { const tk = tokenize(normIn(raw)); if (!tk.length) return null; return parseExpr(tk); } catch (e) { return null; } }
+function sameVal(n1, n2, E) { let any = false; for (const e of E) { const a = ev(n1, e), b = ev(n2, e); if (isNaN(a) && isNaN(b)) continue; if (isNaN(a) || isNaN(b)) return false; if (Math.abs(a - b) > 1e-7 * Math.max(1, Math.abs(a))) return false; any = true; } return any; }
+// phân tích câu học sinh gõ
+function analyze(raw) {
+  const s = normIn(raw), tk = tokenize(s);
+  while (tk.length && (tk[0] === "*" || tk[0] === "/" || tk[0] === "=")) tk.shift();
+  const nums = tk.filter(t => /^[\d.]/.test(t) || t === "sqrt" || t === "cbrt").length;
+  if (!tk.length || !nums && !tk.some(t => /^[abxy]$/.test(t))) return {kind: "none"};
+  const rel = tk.findIndex(t => /^(>=|<=|!=|<|>)$/.test(t));
+  try {
+    if (rel >= 0) { const L = parseExpr(tk.slice(0, rel)), R = parseExpr(tk.slice(rel + 1)); return {kind: "ineq", L, R, op: tk[rel]}; }
+    if (tk.includes("=")) { const parts = []; let cur = []; for (const t of tk) { if (t === "=") { parts.push(cur); cur = []; } else cur.push(t); } parts.push(cur);
+      if (parts.some(x => !x.length)) return {kind: "none"}; return {kind: "eq", parts: parts.map(parseExpr)}; }
+    return {kind: "expr", n: parseExpr(tk), scope: /căn|can|sqrt|√/.test(raw.toLowerCase()) && !/[(\[{]/.test(raw)};
+  } catch (e) { return {kind: "none"}; }
+}
+const isPure = s => /^[\d\s,.+\-−·*:/()√∛{}\\f²³^|abxy]*$/.test(s) && /[\dabxy]/.test(s);
+// danh sách giá trị: "0,6 và −0,6", "{0; 4; 9}", "±5"
+function listVals(raw, strict) {
+  let s = String(raw).replace(/^\s*[a-z]\s*∈\s*/i, "").replace(/^\s*\{|\}\s*$/g, "").trim();
+  if (/^±/.test(s)) { const n = tryParse(s.slice(1)); return n && !hasVar(n) ? [ev(n), -ev(n)] : null; }
+  const parts = s.split(/\s+(?:và|va|hoặc|hoac)\s+|;/).map(x => x.trim()).filter(Boolean);
+  if (parts.length < 2 || strict && !parts.every(isPure)) return null;
+  const v = parts.map(p => { const n = tryParse(mToTxt(p)); return n && !hasVar(n) ? ev(n) : NaN; });
+  return v.some(isNaN) ? null : v;
+}
+const sameSet = (A, B) => A && B && A.length === B.length && A.every(x => B.some(y => Math.abs(x - y) < 1e-7)) && B.every(y => A.some(x => Math.abs(x - y) < 1e-7));
+function truthIneq(I, e) { const a = ev(I.L, e), b = ev(I.R, e); if (isNaN(a) || isNaN(b)) return null; const d = a - b, z = Math.abs(d) < 1e-9;
+  return I.op === ">" ? d > 0 && !z : I.op === "<" ? d < 0 && !z : I.op === ">=" ? d > 0 || z : I.op === "<=" ? d < 0 || z : !z; }
+function sameIneq(I1, I2) {
+  const vars = hasVar(I1.L) || hasVar(I1.R) || hasVar(I2.L) || hasVar(I2.R);
+  if (!vars) { const v = I => [ev(I.L), ev(I.R)], [a, b] = v(I1), [c, d] = v(I2), f = {">": "<", "<": ">", ">=": "<=", "<=": ">=", "!=": "!="};
+    const eq = (p, q) => Math.abs(p - q) < 1e-9; return (I1.op === I2.op && eq(a, c) && eq(b, d)) || (I1.op === f[I2.op] && eq(a, d) && eq(b, c)); }
+  for (let x = -20; x <= 30; x += 0.25) for (const dx of [0, 0.01]) { const e = {x: x + dx, a: x + dx, b: x + dx, y: x + dx}; if (!!truthIneq(I1, e) !== !!truthIneq(I2, e)) return false; }
+  return true;
+}
+// giá trị (hoặc mệnh đề) của một đáp án soạn sẵn
+function optInfo(o) {
+  const L = listVals(o, true); if (L) return {list: L};
+  if (/[<>≤≥≠]/.test(o) && /^[\d\s,.+\-−·*:/()√∛{}\\f²³^|abxy<>≤≥≠=]*$/.test(o)) { const A = analyze(mToTxt(o)); if (A.kind === "ineq") return {ineq: A}; }
+  if (isPure(o)) { const n = tryParse(mToTxt(o)); if (n) return {n}; }
+  return {text: o};
+}
+
+/* ===== Bộ sinh đề: mỗi lần một bộ mới, đáp án do máy tính ra ===== */
+function rng(seed) { let a = seed >>> 0; return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const NEG = "−";
+function fr(v) { // số hữu tỉ -> kí hiệu
+  if (!isFinite(v)) return "?";
+  for (let q = 1; q <= 600; q++) { const p = v * q; if (Math.abs(p - Math.round(p)) < 1e-7) { const P = Math.round(p), s = P < 0 ? NEG : ""; return q === 1 ? s + Math.abs(P) : s + "\\f{" + Math.abs(P) + "}{" + q + "}"; } }
+  return String(Math.round(v * 1000) / 1000).replace("-", NEG).replace(".", ",");
+}
+const dec = v => String(Math.round(v * 1e6) / 1e6).replace("-", NEG).replace(".", ",");
+const isI = v => Math.abs(v - Math.round(v)) < 1e-9;
+const nice = (v, qmax = 20) => { for (let q = 1; q <= qmax; q++) if (isI(v * q)) return true; return false; };
+// Biểu thức gốc kiểu đề vào 10 (f theo t = √x)
+const HYB = [
+  {id: "B1", intro: "Cho hai biểu thức P = \\f{1}{√{x} + 1} và Q = \\f{√{x} + 2}{x − 5√{x} + 6} + \\f{√{x} + 3}{√{x} − 2} + \\f{√{x} + 2}{3 − √{x}}.", both: "P; Q", nm: "Q", gt: false, ex: [4, 9],
+    f: t => 1 / (t - 2), simp: "\\f{1}{√{x} − 2}", wrong: ["\\f{1}{√{x} − 3}", "\\f{√{x} − 3}{√{x} − 2}"],
+    b: {nm: "P", f: t => 1 / (t + 1)}, d: {nm: "A", pre: "Biết A = \\f{P}{Q}. ", f: t => (t - 2) / (t + 1)}},
+  {id: "B2", intro: "Cho biểu thức A = \\f{√{x}}{√{x} − 2} − \\f{4}{x − 2√{x}}.", nm: "A", gt: true, ex: [4], f: t => (t + 2) / t, simp: "\\f{√{x} + 2}{√{x}}", wrong: ["\\f{√{x} − 2}{√{x}}", "\\f{√{x} + 2}{√{x} − 2}"]},
+  {id: "B3", intro: "Cho biểu thức B = \\f{2√{x}}{√{x} + 3} + \\f{√{x}}{√{x} − 3} − \\f{3x + 9}{x − 9}.", nm: "B", gt: false, ex: [9], f: t => 3 / (3 - t), simp: "\\f{3}{3 − √{x}}", wrong: ["\\f{3}{√{x} − 3}", "\\f{−3}{√{x} + 3}"]},
+  {id: "B4", intro: "Cho biểu thức P = \\f{x − √{x}}{√{x} − 1} + \\f{x − 1}{√{x} + 1}.", nm: "P", gt: false, ex: [1], f: t => 2 * t - 1, simp: "2√{x} − 1", wrong: ["2√{x} + 1", "√{x} − 1"]},
+  {id: "B5", intro: "Cho biểu thức Q = \\f{1}{√{x} − 1} − \\f{1}{√{x} + 1}.", nm: "Q", gt: false, ex: [1], f: t => 2 / (t * t - 1), simp: "\\f{2}{x − 1}", wrong: ["\\f{2√{x}}{x − 1}", "\\f{−2}{x − 1}"]},
+  {id: "B6", intro: "Cho biểu thức P = \\f{√{x} + 1}{√{x} − 2} + \\f{2√{x}}{√{x} + 2} + \\f{2 + 5√{x}}{4 − x}.", nm: "P", gt: false, ex: [4], f: t => 3 * t / (t + 2), simp: "\\f{3√{x}}{√{x} + 2}", wrong: ["\\f{3√{x}}{√{x} − 2}", "\\f{3}{√{x} + 2}"]},
+  {id: "B7", intro: "Cho biểu thức N = \\f{√{x} + 1}{√{x} − 1} − \\f{√{x} − 1}{√{x} + 1}.", nm: "N", gt: false, ex: [1], f: t => 4 * t / (t * t - 1), simp: "\\f{4√{x}}{x − 1}", wrong: ["\\f{4}{x − 1}", "\\f{2√{x}}{x − 1}"]},
+  {id: "B8", intro: "Cho biểu thức K = \\f{√{x}}{√{x} + 3} + \\f{2√{x}}{√{x} − 3} − \\f{3x + 9}{x − 9}.", nm: "K", gt: false, ex: [9], f: t => 3 / (t + 3), simp: "\\f{3}{√{x} + 3}", wrong: ["\\f{3}{√{x} − 3}", "\\f{3√{x}}{√{x} + 3}"]}];
+const dkTxt = (gt, ex) => "x " + (gt ? ">" : "≥") + " 0" + ex.map(e => ", x ≠ " + e).join("");
+const okx = (B, x) => (B.gt ? x > 0 : x >= 0) && !B.ex.includes(x);
+// các dạng ý d, tính bằng máy
+const DTYPES = {
+  eq(B, T, R) { // T = k thì x = ?
+    const ts = [...Array(13).keys()].filter(t => okx(B, t * t) && isFinite(T.f(t)) && nice(T.f(t), 12)); if (!ts.length) return null;
+    const t1 = ts[Math.floor(R() * ts.length)], k = T.f(t1);
+    let roots = []; let prev = T.f(0) - k;
+    for (let t = 0.0005; t < 300; t += 0.0005) { const g = T.f(t) - k; if (Math.abs(g) < 1e-9 || (g * prev < 0 && Math.abs(g) < 50 && Math.abs(prev) < 50)) roots.push(t); prev = g; }
+    if (Math.abs(T.f(0) - k) < 1e-9) roots.push(0);
+    roots = roots.filter((r, i, a) => !a.slice(0, i).some(s => Math.abs(s - r) < 0.01)).filter(r => okx(B, Math.round(r * r)) || !isI(r * r));
+    if (roots.length !== 1 || Math.abs(roots[0] - t1) > 0.01) return null;
+    const X = t1 * t1, bad = t1 > 1 ? t1 : (t1 + 1) ** 2;
+    return {lv: "Dễ", mk: ok => `${T.pre || ""}Để ${T.nm} = ${fr(k)} thì x = ${ok ? X : bad}.`, err: "L11"};
+  },
+  count(B, T, R) { // số x nguyên để T nguyên
+    const L = []; for (let x = 0; x <= 40000; x++) if (okx(B, x) && isFinite(T.f(Math.sqrt(x))) && isI(T.f(Math.sqrt(x)))) L.push(x);
+    if (!L.length || L.length > 8 || L[L.length - 1] > 5000) return null;
+    const sum = R() < .5, val = sum ? L.reduce((a, b) => a + b, 0) : L.length, w = val + (R() < .5 ? 1 : -1) * (sum ? L[L.length - 1] || 1 : 1);
+    return {lv: "Khó", mk: ok => `${T.pre || ""}${sum ? "Tổng các" : "Có đúng " + (ok ? val : w)} giá trị nguyên của x để ${T.nm} nhận giá trị nguyên${sum ? " bằng " + (ok ? val : w) : ""}.`, err: "L10"};
+  },
+  maxx(B, T, R) { // x nguyên lớn nhất để T < k
+    const ks = [-1, -.5, 0, .5, 1, 2, 3, 1 / 3, .25, 1.5, 4].sort(() => R() - .5);
+    for (const k of ks) for (const rel of R() < .5 ? ["<", ">"] : [">", "<"]) {
+      const S = []; for (let x = 0; x <= 40000; x++) { if (!okx(B, x)) continue; const v = T.f(Math.sqrt(x)); if (isFinite(v) && (rel === "<" ? v < k - 1e-12 : v > k + 1e-12)) S.push(x); }
+      if (!S.length || S[S.length - 1] > 3000 || S.length < 2) continue;
+      const X = S[S.length - 1], bad = S.includes(X + 1) ? X - 1 : X + 1;
+      return {lv: "Trung bình", mk: ok => `${T.pre || ""}Giá trị nguyên lớn nhất của x để ${T.nm} ${rel} ${fr(k)} là x = ${ok ? X : bad}.`, err: "L10"}; }
+    return null;
+  },
+  ext(B, T, R) { // giá trị nhỏ nhất / lớn nhất
+    let mn = Infinity, mx = -Infinity, tmn = 0, tmx = 0, big = false;
+    for (let t = 0; t <= 400; t += 0.002) { if (B.gt && t === 0) continue; if (B.ex.some(e => Math.abs(t * t - e) < 1e-6)) continue; const v = T.f(t); if (!isFinite(v) || Math.abs(v) > 1e5) { big = true; continue; } if (v < mn) { mn = v; tmn = t; } if (v > mx) { mx = v; tmx = t; } }
+    const tail = T.f(400), opts = [];
+    if (!big && isI(tmn) && Math.abs(T.f(Math.round(tmn)) - mn) < 1e-9 && Math.abs(tail - mn) > 1e-3 && nice(mn) && okx(B, Math.round(tmn) ** 2)) opts.push(["nhỏ nhất", mn, Math.round(tmn) ** 2, mx]);
+    if (!big && isI(tmx) && Math.abs(T.f(Math.round(tmx)) - mx) < 1e-9 && Math.abs(tail - mx) > 1e-3 && nice(mx) && okx(B, Math.round(tmx) ** 2)) opts.push(["lớn nhất", mx, Math.round(tmx) ** 2, mn]);
+    if (!opts.length) return null; const [w, v, X] = opts[Math.floor(R() * opts.length)];
+    const lim = Math.round(tail * 100) / 100, badv = nice(lim) && Math.abs(lim - v) > 1e-6 ? lim : v + 1;
+    return {lv: "Khó", mk: ok => `${T.pre || ""}Giá trị ${w} của ${T.nm} là ${fr(ok ? v : badv)}, đạt được khi x = ${X}.`, err: "L3"};
+  },
+  neg(B, T, R) { // số x nguyên để T < 0 (hoặc |T| > T)
+    const S = []; for (let x = 0; x <= 40000; x++) { if (!okx(B, x)) continue; const v = T.f(Math.sqrt(x)); if (isFinite(v) && v < -1e-12) S.push(x); }
+    if (!S.length || S[S.length - 1] > 3000 || S.length > 60) return null;
+    const abs = R() < .5, n = S.length, w = n + (R() < .5 ? 1 : -1);
+    return {lv: "Trung bình", mk: ok => `${T.pre || ""}Có đúng ${ok ? n : w} giá trị nguyên của x để ${abs ? `|${T.nm}| > ${T.nm}` : T.nm + " < 0"}.`, err: "L10"};
+  }};
+// một câu đúng/sai kiểu Hưng Yên: a) ĐKXĐ, b) giá trị tại x, c) rút gọn, d) câu hỏi phụ
+function hyCluster(R, B, dt) {
+  const pick = a => a[Math.floor(R() * a.length)], tf = () => R() < .5;
+  const exWrong = B.ex.map(e => isI(Math.sqrt(e)) ? Math.sqrt(e) : e);
+  const dkW = [dkTxt(!B.gt, B.ex), dkTxt(B.gt, B.ex.slice(0, -1)), dkTxt(B.gt, exWrong)].filter(s => s !== dkTxt(B.gt, B.ex) && !/x $/.test(s));
+  const a = tf(), b = tf(), c = tf(), d = tf();
+  const Tb = B.b || {nm: B.nm, f: B.f};
+  const xs = [...Array(13).keys()].map(t => t * t).filter(x => okx(B, x) && x > 1 && isFinite(Tb.f(Math.sqrt(x))) && nice(Tb.f(Math.sqrt(x)), 30));
+  const x0 = pick(xs), v0 = Tb.f(Math.sqrt(x0)), vw = [Tb.f(x0), -v0, v0 + 1].find(v => isFinite(v) && Math.abs(v - v0) > 1e-9 && nice(v, 400));
+  const Td = B.d || {nm: B.nm, f: B.f};
+  const D = DTYPES[dt](B, Td, R); if (!D) return null;
+  return {t: "d", p: 1, lv: D.lv, q: B.intro, e: D.err, s: [
+    [`Điều kiện xác định của ${B.both ? "cả hai biểu thức " + B.both : "biểu thức " + B.nm} là ${a ? dkTxt(B.gt, B.ex) : pick(dkW)}.`, a],
+    [`Giá trị của biểu thức ${Tb.nm} tại x = ${x0} là ${fr(b ? v0 : vw)}.`, b],
+    [`Rút gọn biểu thức ${B.nm} ta được ${B.nm} = ${c ? B.simp : pick(B.wrong)}.`, c],
+    [D.mk(d), d]]};
+}
+function hySet(seed, n, types) { // n câu đúng/sai, mỗi câu một biểu thức gốc khác nhau
+  const R = rng(seed), bases = HYB.slice().sort(() => R() - .5), out = [], T = types || ["eq", "neg", "maxx", "count", "ext"];
+  let bi = 0;
+  for (let k = 0; k < n && bi < bases.length * 3; bi++) { const B = bases[bi % bases.length]; if (out.some(o => o.bid === B.id)) continue;
+    const want = T[k % T.length], order = [want, ...Object.keys(DTYPES).filter(x => x !== want)];
+    for (const dt of order) { const c = hyCluster(R, B, dt); if (c) { c.bid = B.id; c.dt = dt; out.push(c); k++; break; } } }
+  return out;
+}
+// trắc nghiệm sinh tự động cho Chặng 1, Chặng 2
+function mc(R, q, right, wrongs, e) { const o = [right, ...wrongs]; return {t: "m", p: 1, q, o, a: 0, e: e || {}}; }
+const ca = v => v === 1 ? "a" : v === -1 ? NEG + "a" : fr(v) + "a";
+const sq = k => "√{" + k + "}", ri = (R, a, b) => a + Math.floor(R() * (b - a + 1));
+const G1 = [
+  R => { const k = ri(R, 4, 19); return mc(R, `Căn bậc hai số học của ${k * k} là`, `${k}`, [`${NEG}${k}`, `±${k}`, `${k * k * k}`], {1: "L0", 2: "L0"}); },
+  R => { const k = ri(R, 3, 15); return mc(R, `Các căn bậc hai của ${k * k} là`, `${k} và ${NEG}${k}`, [`${k}`, `${NEG}${k}`, `${k * k} và ${NEG}${k * k}`], {1: "L0", 2: "L0"}); },
+  R => { const k = ri(R, 2, 7), s = R() < .6 ? -1 : 1, v = s * k ** 3; return mc(R, `∛{${fr(v)}} bằng`, fr(s * k), [fr(-s * k), `±${k}`, s < 0 ? "Không tồn tại" : fr(s * k * k)], {1: "L8", 2: "L8", 3: "L8"}); },
+  R => { const a = [1, 2, 3, -1, -2, -3][ri(R, 0, 5)], th = ri(R, -6, 9), b = -a * th; const ex = `${a === 1 ? "" : a === -1 ? NEG : fr(a)}x${b ? (b > 0 ? " + " + b : " − " + -b) : ""}`;
+    const rel = a > 0 ? "≥" : "≤", flip = a > 0 ? "≤" : "≥"; return mc(R, `Biểu thức √{${ex}} xác định khi`, `x ${rel} ${fr(th)}`, [`x ${flip} ${fr(th)}`, `x ${rel === "≥" ? ">" : "<"} ${fr(th)}`, `x ${rel} ${fr(-th || 1)}`], {1: "L3", 2: "L3", 3: "L3"}); },
+  R => { const a = [1, 2, -1, -2][ri(R, 0, 3)], th = ri(R, -5, 8), b = -a * th; const ex = `${a === 1 ? "" : a === -1 ? NEG : fr(a)}x${b ? (b > 0 ? " + " + b : " − " + -b) : ""}`;
+    const rel = a > 0 ? ">" : "<"; return mc(R, `Biểu thức \\f{1}{√{${ex}}} xác định khi`, `x ${rel} ${fr(th)}`, [`x ${rel === ">" ? "≥" : "≤"} ${fr(th)}`, `x ${rel === ">" ? "<" : ">"} ${fr(th)}`, `x ≠ ${fr(th)}`], {1: "L3", 2: "L3", 3: "L3"}); },
+  R => { let n = ri(R, 2, 40); while (isI(Math.sqrt(n))) n++; const m = Math.round(Math.sqrt(n)) + (R() < .5 ? 0 : 1) * (R() < .5 ? 1 : -1) || 1; if (m * m === n) return null;
+    const pos = m > Math.sqrt(n), A = `${m} − √{${n}}`, B = `√{${n}} − ${m}`;
+    return mc(R, `√{(${A})²} bằng`, pos ? A : B, [pos ? B : A, `${m} + √{${n}}`, `${NEG}${m} − √{${n}}`], {1: "L1"}); },
+  R => { const a = ri(R, 2, 12), b = ri(R, 1, 5), s = R() < .5 ? -1 : 1; const v = a + s * b;
+    return mc(R, `Giá trị của biểu thức √{${a * a}} + ∛{${fr(s * b ** 3)}} là`, fr(v), [fr(a - s * b), fr(-v), fr(a * a + s * b ** 3)], {1: "L8"}); },
+  R => { const k = ri(R, 2, 9), z = R() < .5; const n = z ? k * k / 100 : k * k / 10000, v = z ? k / 10 : k / 100;
+    return mc(R, `√{${dec(n)}} bằng`, dec(v), [dec(v / 10), dec(v * 10), dec(n * 10)], {1: "L6", 2: "L6", 3: "L6"}); },
+  R => { const a = ri(R, 2, 9), s = R() < .5; return mc(R, `Với ${s ? "a < 0" : "a > 0"}, √{${a * a}a²} bằng`, s ? `${NEG}${a}a` : `${a}a`, [s ? `${a}a` : `${NEG}${a}a`, `${a * a}a`, `${a}a²`], {1: "L1"}); }];
+const G2 = [
+  R => { const p = [2, 3, 5, 6, 7][ri(R, 0, 4)], q = ri(R, 1, 4), r = ri(R, 2, 5); if (q === r) return null; const A = p * q * q, B = p * r * r; return mc(R, `√{${A}} · √{${B}} bằng`, `${p * q * r}`, [`√{${A + B}}`, `${A * B}`, `${q * r}√{${p}}`], {1: "L2"}); },
+  R => { const p = [2, 3, 5, 6, 7][ri(R, 0, 4)], q = ri(R, 1, 3), k = ri(R, 2, 6), A = p * (k * q) ** 2, B = p * q * q; return mc(R, `\\f{√{${A}}}{√{${B}}} bằng`, `${k}`, [`${k * k}`, `√{${A - B}}`, `\\f{1}{${k}}`], {2: "L2"}); },
+  R => { const m = [2, 3, 5, 6, 7, 10][ri(R, 0, 5)], k = ri(R, 2, 7); return mc(R, `√{${k * k * m}} bằng`, `${k}√{${m}}`, [`${k * k}√{${m}}`, `${m}√{${k}}`, `${k}√{${k * m}}`], {1: "L5", 2: "L5", 3: "L5"}); },
+  R => { const m = [2, 3, 5, 6, 7][ri(R, 0, 4)], k = ri(R, 2, 6), s = R() < .5; return mc(R, `Đưa thừa số vào trong dấu căn: ${s ? NEG : ""}${k}√{${m}} bằng`, `${s ? NEG : ""}√{${k * k * m}}`, [`${s ? "" : NEG}√{${k * k * m}}`, s ? `√{${NEG}${k * k * m}}` : `√{${k * m}}`, `${s ? NEG : ""}√{${k * m}}`], {1: "L5", 2: "L5", 3: "L5"}); },
+  R => { const m = [2, 3, 5, 7][ri(R, 0, 3)], a = ri(R, 1, 4), b = ri(R, 2, 5), c = ri(R, 1, 3); if (a === c) return null; const v = a + b - c;
+    return mc(R, `√{${a * a * m}} + √{${b * b * m}} − √{${c * c * m}} bằng`, v === 0 ? "0" : v === 1 ? `√{${m}}` : v === -1 ? `${NEG}√{${m}}` : `${fr(v)}√{${m}}`, [`√{${(a * a + b * b - c * c) * m}}`.replace("√{-", `√{${NEG}`), `${a + b + c}√{${m}}`, `${fr(v + 1)}√{${m}}`], {1: "L2"}); },
+  R => { const m = [2, 3, 5, 6, 7][ri(R, 0, 4)], k = ri(R, 1, 4), c = k * m, g = c / m; return mc(R, `Trục căn thức ở mẫu: \\f{${c}}{√{${m}}} bằng`, g === 1 ? `√{${m}}` : `${g}√{${m}}`, [`${c}√{${m}}`, `\\f{√{${m}}}{${c}}`, `${g * m}√{${m}}`], {1: "L7", 2: "L7"}); },
+  R => { const n = ri(R, 1, 3), m = n * n + [1, 2, 4][ri(R, 0, 2)], d = m - n * n, s = R() < .5 ? 1 : -1, c = d * ri(R, 1, 2), g = c / d;
+    const den = `√{${m}} ${s > 0 ? "−" : "+"} ${n}`, num = `√{${m}} ${s > 0 ? "+" : "−"} ${n}`, right = g === 1 ? num : `${g}(${num})`, wr = g === 1 ? den : `${g}(${den})`;
+    return mc(R, `Trục căn thức ở mẫu: \\f{${c}}{${den}} bằng`, right, [wr, `\\f{${c}(${num})}{${m + n * n}}`, `${c}(${num})`], {1: "L7", 2: "L7", 3: "L7"}); },
+  R => { const k = ri(R, 2, 9), j = ri(R, 1, 9), s = R() < .5; if (k === j) return null; const v = s ? -(k + j) : k - j;
+    return mc(R, `Với a ${s ? "<" : ">"} 0, √{${k * k}a²} − ${ca(j)} bằng`, ca(v), [ca(s ? k - j : -(k + j)), ca(-v), ca(k * k - j)], {1: "L1", 2: "L1"}); }];
+function mcSet(seed, G, n) { const R = rng(seed), out = [], used = {}; let guard = 0;
+  while (out.length < n && guard++ < 400) { const gi = Math.floor(R() * G.length); if ((used[gi] || 0) >= Math.ceil(n / G.length)) continue; const it = G[gi](R); if (!it) continue;
+    const vs = it.o.map(o => optInfo(o)); const E = envs(it.q); let dup = false;
+    for (let i = 0; i < 4 && !dup; i++) for (let j = i + 1; j < 4 && !dup; j++) { const A = vs[i], B = vs[j]; if (it.o[i] === it.o[j] || A.n && B.n && sameVal(A.n, B.n, E) || A.ineq && B.ineq && sameIneq(A.ineq, B.ineq)) dup = true; }
+    if (dup) continue; used[gi] = (used[gi] || 0) + 1; out.push(it); }
+  return out; }
+
+/* ===== Dữ liệu chương Căn bậc hai và căn bậc ba ===== */
+// Kí hiệu: √{...} căn bậc hai, ∛{...} căn bậc ba, \f{tử}{mẫu} phân số
+const LOP = "9A2";
+const NAMES = ["Đỗ Hoàng Long","Nguyễn Hạ Vân","Nguyễn Văn Hùng","Nguyễn Vũ Minh Anh","Trần Nhật Minh","Đinh Ngọc Bảo Châu","Nguyễn Đắc Thăng","Lã Trường Minh","Nguyễn Gia Huy","Vũ Hoàng Bảo Vy","Lê Minh Ngọc","Nguyễn Minh Tuấn","Nguyễn Bình Minh","Nguyễn Phương Uyên","Trương Khánh Chi","Nguyễn Bảo Khang","Nguyễn Khánh Linh","Trần Nhật Linh","Đỗ Xuân Nhật Minh","Nguyễn Cao Thục Nhiên","Bùi Duy Minh","Nguyễn Anh Đức","Nguyễn Hà Lâm","Đinh Xuân An Khánh","Trần Bảo Trân","Phan Thanh Trà","Trương Linh Trang"];
+const PASS = 7;
+const ERRN = {L0:"Nhầm căn bậc hai với căn bậc hai số học",L1:"Quên giá trị tuyệt đối khi bỏ căn",L2:"Tách căn của một tổng, hiệu",L3:"Sai điều kiện xác định",L4:"Tách căn khi có thừa số âm",L5:"Sai khi đưa thừa số ra ngoài, vào trong dấu căn",L6:"Sai khi khai căn số thập phân",L7:"Sai khi trục căn thức ở mẫu",L8:"Sai căn bậc ba của số âm",L9:"Sai dấu khi bỏ ngoặc, quy đồng",L10:"Bỏ sót trường hợp hoặc quên đối chiếu điều kiện",L11:"Sai khi giải phương trình, bất phương trình chứa √{x}"};
+const KNOW = {
+  L0:"Số dương a có <b>hai</b> căn bậc hai là √{a} và −√{a}. Còn <b>căn bậc hai số học</b> chỉ là √{a}, luôn ≥ 0.",
+  L1:"√{A²} = |A|. Xét dấu A trước: A ≥ 0 thì |A| = A; A < 0 thì |A| = −A.",
+  L2:"Không có quy tắc tách căn của tổng, hiệu: √{A + B} ≠ √{A} + √{B}. Tính trong căn trước rồi mới khai căn.",
+  L3:"√{A} xác định khi A ≥ 0. Nếu √{A} nằm ở mẫu thì cần A > 0. Chia hai vế bất đẳng thức cho số âm phải đổi chiều.",
+  L4:"√{AB} = √{A} · √{B} chỉ dùng khi A ≥ 0, B ≥ 0. Có thừa số âm thì nhân trước, khai căn sau.",
+  L5:"Đưa ra ngoài: √{A²B} = |A|√{B} (B ≥ 0), tách số dưới căn thành tích có số chính phương. Đưa vào trong: A√{B} = √{A²B} khi A ≥ 0; A < 0 thì A√{B} = −√{A²B}.",
+  L6:"Số thập phân: 0,7² = 0,49 (số chữ số thập phân gấp đôi), 0,2³ = 0,008 (gấp ba). Có thể đổi ra phân số: 0,49 = \\f{49}{100}.",
+  L7:"Trục căn: mẫu √{B} thì nhân cả tử và mẫu với √{B}. Mẫu √{A} ± B thì nhân với biểu thức liên hợp √{A} ∓ B, dùng (a − b)(a + b) = a² − b².",
+  L8:"Mọi số thực đều có đúng một căn bậc ba, cùng dấu với số đó: ∛{−8} = −2 vì (−2)³ = −8.",
+  L9:"Trước ngoặc có dấu trừ thì bỏ ngoặc phải đổi dấu <b>mọi</b> hạng tử trong ngoặc. Quy đồng thì nhân cả tử với nhân tử phụ.",
+  L10:"Xét đủ ước âm và ước dương; √{x} ≥ 0 nên loại giá trị âm; cuối cùng đối chiếu điều kiện xác định.",
+  L11:"Với k ≥ 0: √{x} = k ⇔ x = k²; √{x} < k ⇔ 0 ≤ x < k². Bình phương hai vế, nhớ điều kiện x ≥ 0."};
+
+const CHANGS = [
+  {ten:"Căn bậc hai và căn bậc ba", bai:[1, 2], test:"c1"},
+  {ten:"Khai căn, nhân chia, biến đổi đơn giản", bai:[3, 4], test:"c2"},
+  {ten:"Rút gọn và các dạng bài vào 10", bai:[5, 6], test:"c3"}];
+const TITLE = "TOÁN 9 - CĂN BẬC HAI VÀ CĂN BẬC BA";
+// Bài 1, Luyện tập Chặng 1, Bài 2..5 (khóa trong là 1..6)
+const LABEL = {1: "Bài 1", 2: "Luyện tập Chặng 1", 3: "Bài 2", 4: "Bài 3", 5: "Bài 4", 6: "Bài 5"}, BADGE = {1: "1", 2: "LT", 3: "2", 4: "3", 5: "4", 6: "5"};
+const LESSONS = ["Căn bậc hai, căn bậc ba và căn thức bậc hai","Nhận biết và thông hiểu","Khai căn với phép nhân và phép chia","Đưa thừa số ra ngoài, vào trong; trục căn thức","Rút gọn biểu thức chứa căn","Các dạng bài thường gặp trong đề vào 10"];
+
+// Câu hỏi giữa video: dừng tại t giây; sai thì xem lại từ "from"
+const CP1 = [
+  {t:198,from:119,q:"Khẳng định nào đúng?",o:["√{49} = ±7","√{49} = 7 và −√{49} = −7","Căn bậc hai của 49 chỉ có một số là 7","−49 có hai căn bậc hai là 7 và −7"],a:1,ex:"√{49} là căn bậc hai số học nên luôn không âm: √{49} = 7. Số 49 có hai căn bậc hai là 7 và −7. Viết √{49} = ±7 là sai."},
+  {t:274,from:207,q:"Chọn câu đúng khi so sánh căn bậc ba và căn bậc hai",o:["∛{−8} = −2, còn −4 không có căn bậc hai","∛{−8} không tồn tại vì −8 âm","∛{64} = 8","Số 64 có hai căn bậc ba là 4 và −4"],a:0,ex:"Mỗi số a đều có duy nhất một căn bậc ba, kể cả số âm: (−2)³ = −8. Số âm thì không có căn bậc hai."},
+  {t:396,from:318,q:"√{6 − 2x} xác định khi",o:["x ≤ 3","x ≥ 3","x ≤ −3","x < 3"],a:0,ex:"Cần 6 − 2x ≥ 0 ⇔ −2x ≥ −6 ⇔ x ≤ 3 (chia cho số âm phải đổi chiều, giữ dấu \"=\")."},
+  {t:468,from:397,q:"√{(3 − √{10})²} bằng",o:["3 − √{10}","√{10} − 3","3 + √{10}","−3 − √{10}"],a:1,ex:"Nhìn dấu: √{10} > √{9} = 3 nên 3 − √{10} < 0. Bỏ căn: |3 − √{10}| = √{10} − 3."}];
+const CP3 = [
+  {t:281,from:113,q:"√{3} · (√{12} + √{3}) bằng",o:["9","6","3√{15}","15"],a:0,ex:"√{3} · √{12} + √{3} · √{3} = √{36} + √{9} = 6 + 3 = 9."},
+  {t:326,from:282,q:"Khẳng định nào đúng?",o:["√{36 + 64} = 6 + 8","√{(−9)(−4)} = √{−9} · √{−4}","√{(−9)(−4)} = √{36} = 6","√{25 − 16} = 5 − 4"],a:2,ex:"Không tách căn của một tổng, hiệu (L2). Không tách khi có thừa số âm (L4): tính tích trước, (−9)(−4) = 36, rồi mới khai căn."},
+  {t:481,from:362,q:"Với a > 0, \\f{√{18a³}}{√{2a}} bằng",o:["3a","9a²","−3a","3a²"],a:0,ex:"\\f{√{18a³}}{√{2a}} = √{\\f{18a³}{2a}} = √{9a²} = |3a| = 3a vì a > 0."},
+  {t:541,from:482,q:"Rút gọn √{16a²b²} với a < 0, b > 0",o:["4ab","−4ab","16ab","−16ab"],a:1,ex:"√{16} · √{a²} · √{b²} = 4|a| · |b|. Nhìn dấu: a < 0 nên |a| = −a; b > 0 nên |b| = b. Kết quả: −4ab."}];
+
+// Câu hỏi dừng cho video Bài 3 (trùng 4 slide DỪNG)
+const CP4 = [
+  {t:252,from:101,q:"Đưa thừa số ra ngoài dấu căn: √{98} bằng",o:["7√{2}","49√{2}","2√{7}","14√{7}"],a:0,ex:"98 = 49 · 2 = 7² · 2 nên √{98} = 7√{2}."},
+  {t:360,from:253,q:"Đưa thừa số vào trong dấu căn: −3√{5} bằng",o:["−√{45}","√{45}","√{−45}","−√{15}"],a:0,ex:"−3 là số âm nên dấu trừ để ngoài: −3√{5} = −√{3² · 5} = −√{45}."},
+  {t:567,from:401,q:"Trục căn thức ở mẫu: \\f{12}{√{6}} bằng",o:["2√{6}","12√{6}","√{2}","6√{6}"],a:0,ex:"\\f{12}{√{6}} = \\f{12√{6}}{6} = 2√{6}."},
+  {t:595,from:569,q:"Trục căn thức ở mẫu: \\f{2}{√{3} + 1} bằng",o:["√{3} − 1","√{3} + 1","\\f{√{3} − 1}{2}","2(√{3} − 1)"],a:0,ex:"\\f{2(√{3} − 1)}{(√{3} + 1)(√{3} − 1)} = \\f{2(√{3} − 1)}{2} = √{3} − 1."}];
+// Bài luyện trắc nghiệm: q đề, o đáp án, a chỉ số đúng, e lỗi theo đáp án sai, h gợi ý, st các bước (để trợ lý nhận ra bước trung gian), sol lời giải
+const PR1 = [
+  {q:"∛{−125} bằng",o:["−5","5","±5","Không tồn tại"],a:0,e:{1:"L8",2:"L8",3:"L8"},h:["Căn bậc ba của a là số x sao cho x³ = a.","Số nào lập phương lên bằng −125? Số âm vẫn có căn bậc ba."],st:["∛{−125}","∛{(−5)³}","−5"],sol:"(−5)³ = −125 nên ∛{−125} = −5."},
+  {q:"Căn bậc hai số học của 49 là",o:["7","−7","±7","2401"],a:0,e:{1:"L0",2:"L0"},h:["Căn bậc hai số học là căn bậc hai không âm.","Số nào không âm, bình phương lên bằng 49?"],st:["√{49}","√{7²}","7"],sol:"√{49} = 7."},
+  {q:"√{x + 3} xác định khi",o:["x ≥ −3","x > −3","x ≥ 3","x ≤ −3"],a:0,e:{1:"L3",2:"L3",3:"L3"},h:["√{A} xác định khi A ≥ 0.","Viết bất phương trình x + 3 ≥ 0 rồi chuyển vế."],st:["x + 3 ≥ 0","x ≥ −3"],sol:"x + 3 ≥ 0 ⇔ x ≥ −3."},
+  {q:"√{(√{7} − 3)²} bằng",o:["√{7} − 3","3 − √{7}","3 + √{7}","−3 − √{7}"],a:1,e:{0:"L1"},h:["Dùng √{A²} = |A|.","So sánh √{7} với 3 = √{9}: biểu thức √{7} − 3 âm hay dương?"],st:["√{(√{7} − 3)²}","|√{7} − 3|","3 − √{7}"],sol:"√{7} < √{9} = 3 nên |√{7} − 3| = 3 − √{7}."},
+  {opt:1,q:"Với x < 2, √{x² − 4x + 4} bằng",o:["x − 2","2 − x","|x| − 2","x + 2"],a:1,e:{0:"L1"},h:["x² − 4x + 4 là bình phương của một biểu thức. Em nhận ra hằng đẳng thức nào?","Với x < 2 thì x − 2 âm hay dương?"],st:["√{x² − 4x + 4}","√{(x − 2)²}","|x − 2|","2 − x"],sol:"√{(x − 2)²} = |x − 2| = 2 − x vì x − 2 < 0."}];
+const PR2 = [
+  {q:"Số 0,36 có các căn bậc hai là",o:["0,6 và −0,6","0,6","0,06 và −0,06","−0,6"],a:0,e:{1:"L0",2:"L6",3:"L0"},h:["Số dương có hai căn bậc hai, là hai số đối nhau.","Số nào bình phương bằng 0,36? Đếm chữ số thập phân: 0,36 có 2 chữ số."],st:["0,6² = 0,36"],sol:"0,6² = 0,36 và (−0,6)² = 0,36 nên 0,36 có hai căn bậc hai là 0,6 và −0,6."},
+  {q:"∛{0,008} bằng",o:["0,2","0,02","0,4","−0,2"],a:0,e:{1:"L6",3:"L8"},h:["Tìm số x sao cho x³ = 0,008.","0,008 có 3 chữ số thập phân, nên x có 1 chữ số thập phân. 2³ = 8."],st:["∛{0,008}","∛{0,2³}","0,2"],sol:"0,2³ = 0,008 nên ∛{0,008} = 0,2."},
+  {q:"So sánh 6 và √{35}",o:["6 > √{35}","6 < √{35}","6 = √{35}","Không so sánh được"],a:0,e:{},h:["Viết 6 dưới dạng căn bậc hai: 6 = √{?}","6 = √{36}. Với a, b không âm: a < b ⇔ √{a} < √{b}."],st:["6 = √{36}","√{36} > √{35}"],sol:"6 = √{36} > √{35}."},
+  {q:"Biểu thức \\f{1}{√{x − 2}} xác định khi",o:["x > 2","x ≥ 2","x ≠ 2","x < 2"],a:0,e:{1:"L3",2:"L3",3:"L3"},h:["Có hai điều kiện: biểu thức dưới căn không âm và mẫu khác 0.","Gộp lại: x − 2 > 0."],st:["x − 2 > 0","x > 2"],sol:"Cần x − 2 ≥ 0 và √{x − 2} ≠ 0, tức là x − 2 > 0 ⇔ x > 2."},
+  {q:"√{(−5)²} bằng",o:["5","−5","±5","25"],a:0,e:{1:"L1",2:"L0"},h:["Tính (−5)² trước.","√{25} là căn bậc hai số học, luôn không âm. Hoặc dùng √{A²} = |A|."],st:["√{(−5)²}","√{25}","5"],sol:"√{(−5)²} = |−5| = 5."},
+  {q:"Giá trị của ∛{27} − √{16} là",o:["−1","1","7","−7"],a:0,e:{},h:["Tính riêng từng số: ∛{27} và √{16}.","∛{27} = 3, √{16} = 4. Lấy hiệu."],st:["∛{27} − √{16}","3 − 4","−1"],sol:"∛{27} − √{16} = 3 − 4 = −1."},
+  {q:"Với a < 0, √{9a²} bằng",o:["−3a","3a","9a","−9a"],a:0,e:{1:"L1",3:"L1"},h:["9a² = (3a)². Dùng √{A²} = |A|.","Với a < 0 thì 3a âm hay dương? |3a| bằng gì?"],st:["√{9a²}","√{(3a)²}","|3a|","−3a"],sol:"√{(3a)²} = |3a| = −3a vì a < 0."},
+  {q:"Giá trị của x thỏa mãn √{x} = 5 là",o:["25","5","√{5}","±25"],a:0,e:{},h:["√{x} = 5 nghĩa là x ≥ 0 và x = 5².","Bình phương hai vế."],st:["x = 5²","25"],sol:"√{x} = 5 ⇔ x = 5² = 25."},
+  {q:"Giá trị của x thỏa mãn ∛{x} = −2 là",o:["−8","8","−6","Không có x"],a:0,e:{1:"L8",3:"L8"},h:["∛{x} = a ⇔ x = a³.","Tính (−2)³."],st:["x = (−2)³","−8"],sol:"∛{x} = −2 ⇔ x = (−2)³ = −8."}];
+const PR3 = [
+  {q:"√{2} · √{50} bằng",o:["10","√{52}","100","5√{2}"],a:0,e:{1:"L2"},h:["Dùng √{A} · √{B} = √{AB}.","Tính 2 · 50 trước rồi khai căn."],st:["√{2 · 50}","√{100}","10"],sol:"√{2 · 50} = √{100} = 10."},
+  {q:"\\f{√{75}}{√{3}} bằng",o:["5","25","√{72}","\\f{5}{3}"],a:0,e:{},h:["Dùng \\f{√{A}}{√{B}} = √{\\f{A}{B}}.","75 : 3 bằng bao nhiêu? Số đó là bình phương của số nào?"],st:["√{75 : 3}","√{25}","5"],sol:"√{75 : 3} = √{25} = 5."},
+  {q:"√{0,49} : √{0,25} bằng",o:["1,4","0,14","\\f{7}{25}","0,24"],a:0,e:{1:"L6"},h:["Khai căn từng số: √{0,49} và √{0,25}.","0,7 : 0,5 = ?"],st:["0,7 : 0,5","1,4"],sol:"√{0,49} : √{0,25} = 0,7 : 0,5 = 1,4."},
+  {q:"Khẳng định nào sai?",o:["√{16 + 9} = √{16} + √{9}","√{4 · 25} = √{4} · √{25}","√{(−2)(−8)} = 4","\\f{√{48}}{√{3}} = 4"],a:0,e:{},h:["Quy tắc nhân, chia chỉ dùng cho tích và thương.","Thử tính hai vế của câu A: √{25} có bằng 4 + 3 không?"],st:["√{16 + 9}","√{25}","5"],sol:"√{16 + 9} = √{25} = 5, còn √{16} + √{9} = 7. Không tách căn của một tổng."},
+  {q:"Với x > 0, √{5x} · √{45x} bằng",o:["15x","−15x","15x²","225x²"],a:0,e:{1:"L1",2:"L1"},h:["Nhân hai căn: √{5x · 45x} = √{225x²}.","√{225x²} = |15x|. Với x > 0 thì |15x| bằng gì?"],st:["√{5x · 45x}","√{225x²}","|15x|","15x"],sol:"√{225x²} = |15x| = 15x vì x > 0."}];
+const PR4 = [
+  {q:"√{50} bằng",o:["5√{2}","25√{2}","2√{5}","10√{5}"],a:0,e:{1:"L5",2:"L5",3:"L5"},h:["Tách 50 thành tích có một số chính phương lớn nhất.","50 = 25 · 2, mà √{25} = 5."],st:["√{25 · 2}","√{25} · √{2}","5√{2}"],sol:"√{50} = √{25 · 2} = 5√{2}."},
+  {q:"Đưa thừa số vào trong dấu căn: 3√{2} bằng",o:["√{18}","√{6}","√{12}","√{36}"],a:0,e:{1:"L5"},h:["Thừa số dương thì bình phương rồi nhân vào trong căn.","3√{2} = √{3² · 2}."],st:["√{3² · 2}","√{18}"],sol:"3√{2} = √{9 · 2} = √{18}."},
+  {q:"Đưa thừa số vào trong dấu căn: −2√{3} bằng",o:["−√{12}","√{12}","√{−12}","−√{6}"],a:0,e:{1:"L5",2:"L5",3:"L5"},h:["Thừa số âm: giữ dấu trừ ở ngoài, chỉ đưa phần dương vào trong.","−2√{3} = −(2√{3}) = −√{2² · 3}."],st:["−√{2² · 3}","−√{12}"],sol:"−2√{3} = −√{4 · 3} = −√{12}."},
+  {q:"√{12} + √{27} − √{75} bằng",o:["0","√{−36}","2√{3}","−√{3}"],a:0,e:{1:"L2"},h:["Đưa từng căn về dạng a√{3}.","√{12} = 2√{3}, √{27} = 3√{3}, √{75} = 5√{3}."],st:["2√{3} + 3√{3} − 5√{3}","(2 + 3 − 5)√{3}","0"],sol:"2√{3} + 3√{3} − 5√{3} = 0."},
+  {q:"Trục căn thức ở mẫu: \\f{6}{√{3}} bằng",o:["2√{3}","6√{3}","√{2}","3√{3}"],a:0,e:{1:"L7",3:"L7"},h:["Nhân cả tử và mẫu với √{3}.","\\f{6√{3}}{3} rồi rút gọn."],st:["\\f{6√{3}}{√{3} · √{3}}","\\f{6√{3}}{3}","2√{3}"],sol:"\\f{6}{√{3}} = \\f{6√{3}}{3} = 2√{3}."},
+  {opt:1,q:"Trục căn thức ở mẫu: \\f{2}{√{5} − 1} bằng",o:["\\f{√{5} + 1}{2}","\\f{√{5} − 1}{2}","√{5} + 1","\\f{2(√{5} + 1)}{6}"],a:0,e:{1:"L7",2:"L7",3:"L7"},h:["Biểu thức liên hợp của √{5} − 1 là √{5} + 1.","(√{5} − 1)(√{5} + 1) = 5 − 1 = 4."],st:["\\f{2(√{5} + 1)}{(√{5} − 1)(√{5} + 1)}","\\f{2(√{5} + 1)}{4}","\\f{√{5} + 1}{2}"],sol:"\\f{2(√{5} + 1)}{5 − 1} = \\f{√{5} + 1}{2}."},
+  {q:"Với a ≥ 0, √{18a²} bằng",o:["3a√{2}","9a√{2}","3a√{6}","−3a√{2}"],a:0,e:{1:"L5",2:"L5",3:"L1"},h:["18a² = 9a² · 2 = (3a)² · 2.","√{(3a)² · 2} = |3a|√{2}. Với a ≥ 0 thì |3a| = 3a."],st:["√{9a² · 2}","|3a|√{2}","3a√{2}"],sol:"√{18a²} = |3a|√{2} = 3a√{2} vì a ≥ 0."}];
+
+// Bài ghép bước: s các bước đúng theo thứ tự, d bước nhiễu [bước, mã lỗi, ghi chú]
+const GH5 = [
+  {q:"Rút gọn A = 2√{8} − 3√{18} + √{50}",s:["A = 2 · 2√{2} − 3 · 3√{2} + 5√{2}","A = 4√{2} − 9√{2} + 5√{2}","A = (4 − 9 + 5)√{2}","A = 0"],d:[["A = √{2 · 8 − 3 · 18 + 50}","L2","Không gộp các căn khác nhau vào một căn."]]},
+  {q:"Rút gọn B = \\f{1}{√{3} − 1} − \\f{1}{√{3} + 1}",s:["B = \\f{(√{3} + 1) − (√{3} − 1)}{(√{3} − 1)(√{3} + 1)}","B = \\f{√{3} + 1 − √{3} + 1}{3 − 1}","B = \\f{2}{2}","B = 1"],d:[["B = \\f{√{3} + 1 − √{3} − 1}{3 − 1}","L9","Trước ngoặc có dấu trừ, phải đổi dấu cả −1 thành +1."]]},
+  {q:"Rút gọn P = \\f{x − √{x}}{√{x} − 1} + \\f{x − 1}{√{x} + 1} với x ≥ 0, x ≠ 1",s:["P = \\f{√{x}(√{x} − 1)}{√{x} − 1} + \\f{(√{x} − 1)(√{x} + 1)}{√{x} + 1}","P = √{x} + √{x} − 1","P = 2√{x} − 1"],d:[["P = √{x} + √{x} + 1","L9","x − 1 = (√{x} − 1)(√{x} + 1), rút gọn còn √{x} − 1."]]},
+  {q:"Rút gọn A = \\f{√{x}}{√{x} − 2} − \\f{4}{x − 2√{x}} với x > 0, x ≠ 4",s:["x − 2√{x} = √{x}(√{x} − 2). Mẫu chung: √{x}(√{x} − 2)","A = \\f{√{x} · √{x} − 4}{√{x}(√{x} − 2)}","A = \\f{x − 4}{√{x}(√{x} − 2)}","A = \\f{(√{x} − 2)(√{x} + 2)}{√{x}(√{x} − 2)}","A = \\f{√{x} + 2}{√{x}}"],d:[["A = \\f{√{x} − 4}{√{x}(√{x} − 2)}","L9","Quy đồng phải nhân cả tử √{x} với nhân tử phụ √{x}."]]},
+  {opt:1,q:"Rút gọn B = \\f{2√{x}}{√{x} + 3} + \\f{√{x}}{√{x} − 3} − \\f{3x + 9}{x − 9} với x ≥ 0, x ≠ 9",s:["B = \\f{2√{x}(√{x} − 3) + √{x}(√{x} + 3) − (3x + 9)}{x − 9}","B = \\f{2x − 6√{x} + x + 3√{x} − 3x − 9}{x − 9}","B = \\f{−3√{x} − 9}{x − 9}","B = \\f{−3(√{x} + 3)}{(√{x} − 3)(√{x} + 3)}","B = \\f{−3}{√{x} − 3}"],d:[["B = \\f{2x − 6√{x} + x + 3√{x} − 3x + 9}{x − 9}","L9","−(3x + 9) = −3x − 9, đổi dấu cả 9."]]}];
+const GH6 = [
+  {q:"Cho P = \\f{√{x} + 2}{√{x} − 1} với x ≥ 0, x ≠ 1. Tính giá trị của P khi x = 16",s:["x = 16 thỏa mãn điều kiện, √{x} = √{16} = 4","P = \\f{4 + 2}{4 − 1}","P = \\f{6}{3} = 2"],d:[["√{x} = ±4","L0","√{16} là căn bậc hai số học, chỉ bằng 4."],["P = \\f{16 + 2}{16 − 1}","L11","Thay √{x} = 4, không thay x = 16 vào chỗ √{x}."]]},
+  {q:"Cho P = \\f{√{x} + 2}{√{x} − 1} với x ≥ 0, x ≠ 1. Tìm x để P = 2",s:["\\f{√{x} + 2}{√{x} − 1} = 2","√{x} + 2 = 2(√{x} − 1)","√{x} + 2 = 2√{x} − 2","√{x} = 4","x = 16 (thỏa mãn điều kiện)"],d:[["x = 4","L11","√{x} = 4 thì bình phương hai vế: x = 16."],["√{x} + 2 = 2√{x} − 1","L9","Nhân 2 vào cả hai hạng tử trong ngoặc."]]},
+  {q:"Cho P = \\f{√{x} + 2}{√{x} − 1} với x ≥ 0, x ≠ 1. Tìm x để P > 1",s:["P − 1 > 0","\\f{√{x} + 2 − (√{x} − 1)}{√{x} − 1} > 0","\\f{3}{√{x} − 1} > 0","Vì 3 > 0 nên √{x} − 1 > 0","√{x} > 1 ⇔ x > 1"],d:[["√{x} + 2 > √{x} − 1","L3","Không nhân chéo khi chưa biết mẫu dương hay âm."]]},
+  {q:"Cho K = \\f{3}{√{x} + 3} với x ≥ 0, x ≠ 9. Tìm số nguyên x lớn nhất để K > \\f{1}{2}",s:["\\f{3}{√{x} + 3} > \\f{1}{2}","Vì √{x} + 3 > 0 nên 6 > √{x} + 3","√{x} < 3","0 ≤ x < 9","Số nguyên x lớn nhất là x = 8"],d:[["Số nguyên x lớn nhất là x = 9","L10","x < 9 nên x = 9 không thỏa mãn (và x = 9 còn bị loại bởi điều kiện)."],["√{x} > 3","L3","3 > 0 nên phân số lớn hơn khi mẫu nhỏ hơn: √{x} + 3 < 6."]]},
+  {opt:1,q:"Cho K = \\f{3}{√{x} + 3} với x ≥ 0, x ≠ 9. Tìm giá trị lớn nhất của K",s:["Vì √{x} ≥ 0 nên √{x} + 3 ≥ 3","Suy ra \\f{3}{√{x} + 3} ≤ \\f{3}{3} = 1","Giá trị lớn nhất của K là 1, khi x = 0"],d:[["Suy ra \\f{3}{√{x} + 3} ≥ 1","L3","Mẫu lớn hơn hoặc bằng 3 thì phân số (tử dương) nhỏ hơn hoặc bằng 1."]]},
+  {opt:1,q:"Cho P = \\f{√{x} + 2}{√{x} − 1} với x ≥ 0, x ≠ 1. Tìm x nguyên để P nhận giá trị nguyên",s:["P = \\f{√{x} − 1 + 3}{√{x} − 1} = 1 + \\f{3}{√{x} − 1}","x nguyên mà √{x} không nguyên thì P không nguyên. Xét √{x} nguyên: √{x} − 1 là ước của 3","√{x} − 1 ∈ {−3; −1; 1; 3}","√{x} ∈ {−2; 0; 2; 4}. Vì √{x} ≥ 0 nên √{x} ∈ {0; 2; 4}","x ∈ {0; 4; 16} (thỏa mãn điều kiện)"],d:[["√{x} − 1 ∈ {1; 3}","L10","Quên ước âm: −1 cũng là ước của 3 và cho √{x} = 0."]]},
+  {opt:1,q:"Cho P = \\f{√{x} − 1}{√{x} + 2} với x ≥ 0. Tìm giá trị nhỏ nhất của P",s:["P = \\f{√{x} + 2 − 3}{√{x} + 2} = 1 − \\f{3}{√{x} + 2}","Vì √{x} ≥ 0 nên √{x} + 2 ≥ 2","Suy ra \\f{3}{√{x} + 2} ≤ \\f{3}{2}","P ≥ 1 − \\f{3}{2} = −\\f{1}{2}","Giá trị nhỏ nhất của P là −\\f{1}{2}, khi x = 0"],d:[["Suy ra \\f{3}{√{x} + 2} ≥ \\f{3}{2}","L3","Mẫu lớn hơn thì phân số (tử dương) nhỏ hơn: đổi chiều."]]}];
+
+// Bài học: video (src, dur, cp) | "pending" | null; prac trắc nghiệm; gh ghép bước
+const LES = {
+  1: {video: {src: "video_bai1.mp4", dur: 531, cp: CP1}, prac: PR1},
+  2: {video: null, prac: PR2},
+  3: {video: {src: "video_bai3.mp4", dur: 565, cp: CP3}, prac: PR3},
+  4: {video: {src: "video_bai4.mp4", dur: 600, cp: CP4}, prac: PR4},
+  5: {video: {src: "video_bai5.mp4", dur: 362, cp: []}, gh: GH5},
+  6: {video: {list: [
+      {src: "video_bai6_1.mp4", dur: 280, ten: "Tính giá trị của biểu thức", cp: []},
+      {src: "video_bai6_2.mp4", dur: 130, ten: "Tìm x để P = 2", cp: []},
+      {src: "video_bai6_3.mp4", dur: 115, ten: "Tìm x để A < 0", cp: []},
+      {src: "video_bai6_4.mp4", dur: 283, ten: "Tìm x nguyên để Q nhận giá trị nguyên", cp: []},
+      {src: "video_bai6_5.mp4", dur: 244, ten: "Tìm giá trị lớn nhất của biểu thức", cp: []}]}, gh: GH6}};
+
+// Đề kiểm tra: m trắc nghiệm, d đúng/sai 4 ý (cách tính điểm như đề vào 10), g ghép bước; p là điểm
+const TESTS = {
+  c1: {ten:"Kiểm tra Chặng 1", mo:"Căn bậc hai, căn bậc ba, căn thức bậc hai", phut:20, items:[
+    {t:"m",p:1,q:"Căn bậc hai số học của 81 là",o:["9","−9","±9","3"],a:0,e:{1:"L0",2:"L0"}},
+    {t:"m",p:1,q:"Điều kiện xác định của biểu thức √{x − 2026} là",o:["x ≥ 2026","x > 2026","x ≤ 2026","x ≠ 2026"],a:0,e:{1:"L3",2:"L3",3:"L3"}},
+    {t:"m",p:1,q:"∛{−64} bằng",o:["−4","4","±4","−8"],a:0,e:{1:"L8",2:"L8"}},
+    {t:"m",p:1,q:"Biểu thức √{(2 − √{5})²} bằng",o:["√{5} − 2","2 − √{5}","2 + √{5}","−2 − √{5}"],a:0,e:{1:"L1"}},
+    {t:"m",p:1,q:"Biểu thức \\f{3}{√{6 − 2x}} xác định khi",o:["x < 3","x ≤ 3","x > 3","x ≥ 3"],a:0,e:{1:"L3",2:"L3",3:"L3"}},
+    {t:"m",p:1,q:"Giá trị của biểu thức √{16} + ∛{−8} là",o:["2","6","−2","−6"],a:0,e:{1:"L8"}},
+    {t:"m",p:1,q:"Với x > 1, √{(1 − x)²} bằng",o:["x − 1","1 − x","(1 − x)²","x + 1"],a:0,e:{1:"L1"}},
+    {t:"m",p:1,q:"Trong các số √{10}; 3; ∛{30}; √{8}, số lớn nhất là",o:["√{10}","3","∛{30}","√{8}"],a:0,e:{}},
+    {t:"d",p:1,q:"Cho biểu thức A = √{x − 1} + \\f{1}{x − 3}.",s:[["A xác định khi x ≥ 1.",false],["Với x = 5 thì A = 2,5.",true],["Với x = 3 thì A xác định.",false],["Với x = 10 thì A = \\f{22}{7}.",true]],e:"L3"},
+    {t:"d",p:1,q:"Xét tính đúng, sai của các khẳng định sau.",s:[["Số −27 có căn bậc ba là −3.",true],["Số 0,25 có hai căn bậc hai là 0,5 và −0,5.",true],["√{(−7)²} = −7.",false],["Phương trình x² = 5 có hai nghiệm x = √{5} và x = −√{5}.",true]],e:"L1"}]},
+  c2: {ten:"Kiểm tra Chặng 2", mo:"Khai căn với phép nhân, phép chia; đưa thừa số; trục căn thức", phut:20, items:[
+    {t:"m",p:1,q:"√{2} · √{18} bằng",o:["6","√{20}","36","3√{2}"],a:0,e:{1:"L2"}},
+    {t:"m",p:1,q:"\\f{√{72}}{√{2}} bằng",o:["6","36","√{70}","3"],a:0,e:{}},
+    {t:"m",p:1,q:"Khẳng định nào đúng?",o:["√{(−4)(−25)} = 10","√{(−4)(−25)} = √{−4} · √{−25}","√{9 + 16} = 7","√{4 + 9} = 2 + 3"],a:0,e:{1:"L4",2:"L2",3:"L2"}},
+    {t:"m",p:1,q:"√{48} bằng",o:["4√{3}","3√{4}","16√{3}","8√{3}"],a:0,e:{1:"L5",2:"L5",3:"L5"}},
+    {t:"m",p:1,q:"2√{8} + √{50} − 3√{2} bằng",o:["6√{2}","√{56}","4√{2}","12√{2}"],a:0,e:{1:"L2",2:"L5"}},
+    {t:"m",p:1,q:"Trục căn thức ở mẫu của \\f{4}{√{3} + 1} được",o:["2√{3} − 2","2√{3} + 2","√{3} − 1","4√{3} − 4"],a:0,e:{1:"L7",2:"L7",3:"L7"}},
+    {t:"m",p:1,q:"Với a < 0, √{25a²} − 3a bằng",o:["−8a","2a","8a","−2a"],a:0,e:{1:"L1",2:"L1"}},
+    {t:"m",p:1,q:"Với a > 0, đưa thừa số vào trong dấu căn: −a√{3} bằng",o:["−√{3a²}","√{3a²}","√{−3a²}","−√{3a}"],a:0,e:{1:"L5",2:"L5",3:"L5"}},
+    {t:"d",p:1,q:"Cho A = √{12} + √{27} và B = √{75}.",s:[["√{12} = 2√{3}.",true],["A = √{39}.",false],["A = 5√{3}.",true],["A = B.",true]],e:"L2"},
+    {t:"d",p:1,q:"Cho biểu thức P = \\f{1}{√{3} − √{2}}.",s:[["√{3} + √{2} là biểu thức liên hợp của √{3} − √{2}.",true],["P = √{3} + √{2}.",true],["P < 3.",false],["P² = 5 + 2√{6}.",true]],e:"L7"}]},
+  c3: {ten:"Kiểm tra Chặng 3", mo:"3 bài ghép bước và 4 câu đúng/sai kiểu đề vào 10 Hưng Yên (a điều kiện, b giá trị, c rút gọn, d câu hỏi phụ)", phut:30, n:7, gen: seed => [
+    {t:"g",p:2,q:"Rút gọn P = \\f{x + √{x}}{√{x}} + \\f{x − 4}{√{x} − 2} với x > 0, x ≠ 4",s:["P = \\f{√{x}(√{x} + 1)}{√{x}} + \\f{(√{x} − 2)(√{x} + 2)}{√{x} − 2}","P = √{x} + 1 + √{x} + 2","P = 2√{x} + 3"],d:[["P = √{x} + 1 + √{x} − 2","L9",""]]},
+    {t:"g",p:2,q:"Rút gọn Q = \\f{1}{√{x} − 1} − \\f{1}{√{x} + 1} với x ≥ 0, x ≠ 1",s:["Mẫu chung: (√{x} − 1)(√{x} + 1) = x − 1","Q = \\f{(√{x} + 1) − (√{x} − 1)}{x − 1}","Q = \\f{√{x} + 1 − √{x} + 1}{x − 1}","Q = \\f{2}{x − 1}"],d:[["Q = \\f{√{x} + 1 − √{x} − 1}{x − 1}","L9",""]]},
+    {t:"g",p:2,q:"Cho P = \\f{√{x} − 1}{√{x} + 1} với x ≥ 0. Tìm x để P < \\f{1}{2}",s:["P − \\f{1}{2} < 0","\\f{2(√{x} − 1) − (√{x} + 1)}{2(√{x} + 1)} < 0","\\f{√{x} − 3}{2(√{x} + 1)} < 0","Vì 2(√{x} + 1) > 0 nên √{x} − 3 < 0","√{x} < 3 ⇔ 0 ≤ x < 9"],d:[["√{x} < 3 ⇔ x < 3","L11",""]]}
+    ].concat(hySet(seed, 4, ["eq", "maxx", "count", "ext"]))},
+  ck: {ten:"Kiểm tra cuối chương", mo:"Tổng hợp cả chương · thang điểm 10", phut:45, items:[
+    {t:"m",p:.5,q:"Các căn bậc hai của 64 là",o:["8 và −8","8","−8","32 và −32"],a:0,e:{1:"L0",2:"L0"}},
+    {t:"m",p:.5,q:"√{2x + 6} xác định khi",o:["x ≥ −3","x ≥ 3","x > −3","x ≤ −3"],a:0,e:{1:"L3",2:"L3",3:"L3"}},
+    {t:"m",p:.5,q:"∛{125} − ∛{−1} bằng",o:["6","4","−6","124"],a:0,e:{1:"L8"}},
+    {t:"m",p:.5,q:"√{(√{3} − 2)²} bằng",o:["2 − √{3}","√{3} − 2","√{3} + 2","1"],a:0,e:{1:"L1"}},
+    {t:"m",p:.5,q:"√{5} · √{45} bằng",o:["15","√{50}","225","5√{3}"],a:0,e:{1:"L2"}},
+    {t:"m",p:.5,q:"\\f{√{98}}{√{2}} bằng",o:["7","49","√{96}","14"],a:0,e:{}},
+    {t:"m",p:.5,q:"√{0,09 · 400} bằng",o:["6","0,6","60","3,6"],a:0,e:{1:"L6",2:"L6"}},
+    {t:"m",p:.5,q:"√{75} bằng",o:["5√{3}","3√{5}","25√{3}","15√{5}"],a:0,e:{1:"L5",2:"L5",3:"L5"}},
+    {t:"m",p:.5,q:"3√{12} − 2√{27} + √{3} bằng",o:["√{3}","0","−√{3}","2√{3}"],a:0,e:{1:"L5"}},
+    {t:"m",p:.5,q:"Trục căn thức ở mẫu của \\f{1}{√{5} + 2} được",o:["√{5} − 2","√{5} + 2","\\f{√{5} − 2}{9}","2 − √{5}"],a:0,e:{1:"L7",2:"L7",3:"L7"}},
+    {t:"m",p:.5,q:"Với x ≥ 0, x ≠ 1, biểu thức \\f{x − 1}{√{x} + 1} bằng",o:["√{x} − 1","√{x} + 1","x","1"],a:0,e:{1:"L9"}},
+    {t:"m",p:.5,q:"Với x > 0, x ≠ 9, biểu thức \\f{x − 3√{x}}{√{x} − 3} bằng",o:["√{x}","−√{x}","x − 3","3"],a:0,e:{}},
+    {t:"m",p:.5,q:"Với x ≥ 0, x ≠ 4, biểu thức \\f{√{x}}{√{x} − 2} − \\f{2}{√{x} − 2} bằng",o:["1","\\f{√{x} + 2}{√{x} − 2}","−1","√{x}"],a:0,e:{1:"L9"}},
+    {t:"m",p:.5,q:"Cho P = \\f{√{x} + 3}{√{x} − 1} (x ≥ 0, x ≠ 1). Giá trị của P tại x = 9 là",o:["3","\\f{12}{8}","−3","6"],a:0,e:{1:"L11"}},
+    {t:"m",p:.5,q:"Cho P = \\f{√{x} + 3}{√{x} − 1} (x ≥ 0, x ≠ 1). Tập hợp các số nguyên x để P nhận giá trị nguyên là",o:["{0; 4; 9; 25}","{4; 9; 25}","{0; 4; 9}","{4; 9; 25; 36}"],a:0,e:{1:"L10",2:"L10"}},
+    {t:"m",p:.5,q:"Cho P = \\f{√{x} − 2}{√{x} + 1} (x ≥ 0). P < 0 khi và chỉ khi",o:["0 ≤ x < 4","x < 4","x < 2","x > 4"],a:0,e:{1:"L10",2:"L11"}},
+    {t:"d",p:1,q:"Cho P = \\f{1}{√{x} − 1} + \\f{1}{√{x} + 1}.",s:[["Điều kiện xác định của P là x ≥ 0, x ≠ 1.",true],["P = \\f{2√{x}}{x − 1}.",true],["Tại x = 4 thì P = \\f{4}{3}.",true],["Với 0 < x < 1 thì P > 0.",false]],e:"L9"},
+    {t:"d",p:1,q:"Xét tính đúng, sai của các khẳng định sau.",s:[["√{12} + √{27} = √{39}.",false],["(√{5} − 2)(√{5} + 2) = 1.",true],["\\f{√{6}}{√{2}} = √{3}.",true],["∛{−0,125} = −0,5.",true]],e:"L2"}]}};
+// Luyện thêm (tự chọn, không bắt buộc): mỗi lần một bộ đề mới do máy sinh
+const EXTRA = {
+  x1: {ten:"Luyện thêm Chặng 1", mo:"Bộ đề trắc nghiệm mới mỗi lần: căn bậc hai, căn bậc ba, điều kiện xác định, √{A²} = |A|", phut:20, n:10, ci:0, extra:1, gen: seed => mcSet(seed, G1, 10)},
+  x2: {ten:"Luyện thêm Chặng 2", mo:"Bộ đề trắc nghiệm mới mỗi lần: nhân chia căn, đưa thừa số, trục căn thức", phut:20, n:10, ci:1, extra:1, gen: seed => mcSet(seed, G2, 10)},
+  x3: {ten:"Luyện đề vào 10 kiểu Hưng Yên", mo:"5 câu đúng/sai mới mỗi lần, mỗi câu 4 ý: a điều kiện, b giá trị, c rút gọn, d câu hỏi phụ (dễ đến khó)", phut:25, n:5, ci:2, extra:1, gen: seed => hySet(seed, 5).map(c => Object.assign(c, {p: 2}))}};
+Object.assign(TESTS, EXTRA);
+// Thứ tự mở khóa: bài 1 → bài 2 → KT chặng 1 → ... → KT cuối chương
+const UNITS = []; CHANGS.forEach((c, ci) => { c.bai.forEach(n => UNITS.push({k: "L" + n, n, ci})); UNITS.push({k: "T" + c.test, id: c.test, ci}); }); UNITS.push({k: "Tck", id: "ck", ci: 3});
+
+/* ===== Hiển thị công thức ===== */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+const RS = '<svg class="rs" viewBox="0 0 10 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0.3 11.5 L2.6 10.2 L5.2 19.4 L9.4 0.75 L10 0.75"/></svg>';
+function M(s) {
+  let o = "", i = 0; s = String(s);
+  while (i < s.length) {
+    if ((s[i] === "√" || s[i] === "∛") && s[i + 1] === "{") { const cb = s[i] === "∛", [inn, j] = grabB(s, i + 1);
+      o += `<span class="rad${cb ? " cb" : ""}" role="math" aria-label="${cb ? "căn bậc ba của" : "căn bậc hai của"} ${esc(inn.replace(/[√∛{}\\f]/g, " "))}">${cb ? '<span class="idx">3</span>' : ""}${RS}<span class="rc">${M(inn)}</span></span>`; i = j; }
+    else if (s.startsWith("\\f{", i)) { const [a, j] = grabB(s, i + 2), [b, k] = grabB(s, j); o += `<span class="fr"><span>${M(a)}</span><span>${M(b)}</span></span>`; i = k; }
+    else if (s[i] === "<" && /^<\/?(b|i|br|ul|ol|li)>/.test(s.slice(i, i + 6))) { const t = s.slice(i).match(/^<\/?(b|i|br|ul|ol|li)>/)[0]; o += t; i += t.length; }
+    else { o += esc(s[i]); i++; }
+  }
+  return o;
+}
+
+/* ===== Trạng thái và luật mở khóa ===== */
+const KEY = "ican-demo-hs5", PKEY = "ican-preview";
+const blank = () => ({name: "", L: {}, T: {}});
+let S = blank(), PREVIEW = false;
+try { const r = localStorage.getItem(KEY); if (r) S = Object.assign(S, JSON.parse(r)); PREVIEW = localStorage.getItem(PKEY) === "1"; } catch (e) {}
+const app = document.getElementById("app");
+let screen = location.hash === "#giao-vien" ? "teacher" : S.name ? "home" : "login", CUR = 1, TID = null, exam = S.ex || null, tick = null;
+if (exam && S.name) { screen = "test"; TID = exam.id; }
+/* ===== Gửi tiến độ về Google Sheet của cô ===== */
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbw8dfjfS90LUkDATssDYEHv9s4OlsuW70GLL4vloktn66nQqQQk9SfxvT2csI3HZEiV/exec"; // <-- DÁN LINK ỨNG DỤNG WEB (…/exec) CỦA GOOGLE APPS SCRIPT VÀO GIỮA HAI DẤU NGOẶC KÉP
+let EVQ = []; try { EVQ = JSON.parse(localStorage.getItem("ican-evq") || "[]"); } catch (e) {}
+let syncT = null, lastPush = 0;
+const plain = q => mToTxt(String(q).replace(/<[^>]+>/g, "")).replace(/ sqrt\(/g, "√(").replace(/ cbrt\(/g, "∛(").replace(/\(\((\d+)\)\/\(/g, "($1/(").replace(/\s+/g, " ").trim().slice(0, 80);
+function logEv(e) { if (!S.name) return; EVQ.push(Object.assign({t: Date.now()}, e)); try { localStorage.setItem("ican-evq", JSON.stringify(EVQ.slice(-600))); } catch (x) {} }
+function errStats() { const E = {};
+  for (const n in LES) { const x = S.L[n]; if (!x || !LES[n].prac) continue; for (const i in x.prac) (x.prac[i].w || []).forEach(o => { const c = LES[n].prac[i].e[o]; if (c) E[c] = (E[c] || 0) + 1; }); }
+  for (const id in S.T) { const R = S.T[id], l = R && R.last, IT = l && (l.items || (TESTS[id] && TESTS[id].items)); if (!IT) continue;
+    IT.forEach((it, k) => { const a = l.pick[k]; if (it.t === "m" && a !== undefined && a !== it.a && it.e[a]) E[it.e[a]] = (E[it.e[a]] || 0) + 1; }); }
+  return Object.entries(E).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([c, k]) => `${c} (${k})`).join(", "); }
+const curUnit = () => { const u = UNITS.find(u => !unitDone(u)); return u ? uName(u) : "Về đích"; };
+function slimState() { const c = JSON.parse(JSON.stringify(S)); delete c.ex; for (const k in c.T) if (c.T[k] && c.T[k].last) delete c.T[k].last.items; return c; }
+function sync(now) { if (!SHEET_URL || !S.name || screen === "teacher") return; clearTimeout(syncT);
+  const wait = now ? 0 : EVQ.length ? 3000 : Math.max(3000, 30000 - (Date.now() - lastPush)); syncT = setTimeout(push, wait); }
+function payload(evs) { const tb = id => S.T[id] ? S.T[id].best : "";
+  return {name: S.name, lop: LOP, pct: pct(), cur: curUnit(), c1: tb("c1"), c2: tb("c2"), c3: tb("c3"), ck: tb("ck"),
+    xn: ["x1", "x2", "x3"].reduce((a, k) => a + (S.T[k] ? S.T[k].n : 0), 0), errs: errStats(), state: JSON.stringify(slimState()), evs}; }
+async function push() {
+  const evs = EVQ.slice(0, 150), body = payload(evs);
+  try { await fetch(SHEET_URL, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(body)});
+    lastPush = Date.now(); EVQ = EVQ.slice(evs.length); try { localStorage.setItem("ican-evq", JSON.stringify(EVQ)); } catch (x) {}
+    const el = document.getElementById("sync"); if (el) { el.hidden = false; el.textContent = "Đã gửi tiến độ cho cô"; }
+    if (EVQ.length) sync(true);
+  } catch (e) { const el = document.getElementById("sync"); if (el) { el.hidden = false; el.textContent = "Chưa có mạng, sẽ gửi lại"; } setTimeout(() => sync(true), 20000); }
+}
+addEventListener("online", () => sync(true));
+addEventListener("pagehide", () => { // gửi nốt khi em đóng trang
+  if (!SHEET_URL || !S.name || !navigator.sendBeacon) return; const evs = EVQ.slice(0, 150);
+  if (navigator.sendBeacon(SHEET_URL, new Blob([JSON.stringify(payload(evs))], {type: "text/plain;charset=utf-8"}))) { EVQ = EVQ.slice(evs.length); try { localStorage.setItem("ican-evq", JSON.stringify(EVQ)); } catch (x) {} } });
+async function restore(name) { // học trên máy khác: lấy tiến độ đã lưu trong Sheet
+  if (!SHEET_URL) return;
+  try { const r = await (await fetch(SHEET_URL + "?name=" + encodeURIComponent(name))).json();
+    if (r && r.state) { const R = JSON.parse(r.state); const T = Object.assign(blank(), R, {name}); const old = S; S = T;
+      const remote = pct(); S = old; if (remote > pct() || !Object.keys(S.L).length) { S = T; toast("Đã tải tiến độ của em từ lần học trước."); } } } catch (e) {}
+}
+function save(msg) { S.ex = exam || undefined; sync(); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (msg) { document.getElementById("sync").hidden = false; toast(msg); } }
+function toast(t) { const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 3200); }
+const fmt = s => { s = Math.max(0, Math.floor(s)); return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+const d10 = x => { const r = Math.round(x * 100) / 100; return (Math.abs(r * 10 - Math.round(r * 10)) < 1e-9 ? r.toFixed(1) : r.toFixed(2)).replace(".", ","); };
+const ls = n => { const x = S.L[n] || (S.L[n] = {}); x.seen = x.seen || 0; x.cps = x.cps || {}; x.prac = x.prac || {}; x.gh = x.gh || {}; x.perm = x.perm || {}; return x; };
+const hasVideo = n => LES[n].video && LES[n].video !== "pending";
+// một bài có thể có nhiều video (list), xem lần lượt; phần 0 lưu ngay trong ls(n)
+const vparts = n => hasVideo(n) ? (LES[n].video.list || [LES[n].video]) : [];
+const vpart = (n, k) => { const x = ls(n); if (!k) return x; x.vp = x.vp || {}; const y = x.vp[k] || (x.vp[k] = {}); y.seen = y.seen || 0; y.cps = y.cps || {}; return y; };
+const partDone = (n, k) => !!vpart(n, k).video;
+const vDoneCount = n => vparts(n).filter((_, k) => partDone(n, k)).length;
+const videoDone = n => !LES[n].video ? true : LES[n].video === "pending" ? false : vDoneCount(n) === vparts(n).length;
+let CURP = 0;
+const nReq = a => (a || []).filter(x => !x.opt).length, nOpt = a => (a || []).filter(x => x.opt).length;
+const pracOk = n => (LES[n].prac || []).filter((q, i) => !q.opt && ls(n).prac[i] && ls(n).prac[i].ok).length;
+const ghOk = n => (LES[n].gh || []).filter((g, i) => !g.opt && ls(n).gh[i] && ls(n).gh[i].done).length;
+const lessonDone = n => videoDone(n) && pracOk(n) === nReq(LES[n].prac) && ghOk(n) === nReq(LES[n].gh);
+const testBest = id => S.T[id] ? S.T[id].best : null;
+const testDone = id => (testBest(id) ?? -1) >= PASS;
+const unitDone = u => u.n ? lessonDone(u.n) : testDone(u.id);
+const unitIdx = k => UNITS.findIndex(u => u.k === k);
+const unitOpen = k => PREVIEW || UNITS.slice(0, unitIdx(k)).every(unitDone);
+const blocker = k => UNITS.slice(0, unitIdx(k)).find(u => !unitDone(u));
+const uName = u => u.n ? LABEL[u.n] : TESTS[u.id].ten;
+function unitFrac(u) {
+  if (!u.n) return testDone(u.id) ? 1 : 0;
+  const n = u.n, parts = []; if (LES[n].video) parts.push(hasVideo(n) ? vDoneCount(n) / vparts(n).length : 0);
+  if (LES[n].prac) parts.push(pracOk(n) / nReq(LES[n].prac)); if (LES[n].gh) parts.push(ghOk(n) / nReq(LES[n].gh));
+  return parts.reduce((a, b) => a + b, 0) / parts.length;
+}
+const extraOpen = T => PREVIEW || unitOpen("L" + CHANGS[T.ci].bai[0]);
+const pct = () => Math.round(UNITS.reduce((s, u) => s + unitFrac(u), 0) / UNITS.length * 100);
+const back = (to = "home", t = "← Lộ trình") => `<div class="row" style="margin-top:18px"><button class="btn ghost" data-go="${to}">${t}</button></div>`;
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+/* ===== Đăng nhập, lộ trình ===== */
+function login() {
+  app.innerHTML = `<div class="pane login"><h1>Chào em!</h1><p class="note">Chọn đúng tên của em để bắt đầu. Không cần tải ứng dụng, không cần mật khẩu.</p>
+  <label for="nm" class="note">Lớp ${LOP} · ${NAMES.length} học sinh</label><select id="nm"><option value="">-- Chọn tên --</option>${NAMES.map(n => `<option>${n}</option>`).join("")}</select>
+  <div class="row" style="margin-top:16px"><button class="btn or" id="go" disabled>Vào học</button></div>
+  <p class="note" style="margin-top:22px">Dành cho giáo viên: <button class="btn ghost" data-go="teacher" style="min-height:38px;padding:4px 12px">Xem tiến độ lớp</button></p></div>`;
+  const sel = document.getElementById("nm"), go = document.getElementById("go");
+  sel.onchange = () => go.disabled = !sel.value;
+  go.onclick = async () => { go.disabled = true; go.textContent = "Đang mở..."; const nm = sel.value;
+    if (S.name !== nm) { S = blank(); S.name = nm; } await restore(nm); S.name = nm; save(); screen = "home"; render(); };
+}
+function home() {
+  const p = pct(), r = 34, C = 2 * Math.PI * r;
+  const st = (ok, t) => `<span class="step ${ok ? "ok" : ""}">${ok ? "✓ " : ""}${t}</span>`;
+  const lockTxt = k => { const p = UNITS[unitIdx(k) - 1]; return p ? `Mở khi xong ${uName(p)}` : ""; };
+  const row = n => { const k = "L" + n, open = unitOpen(k), done = lessonDone(n), x = ls(n), V = LES[n].video;
+    const steps = [];
+    if (V === "pending") steps.push(`<span class="step">Video: cô đang chuẩn bị</span>`); else if (V) steps.push(st(videoDone(n), vparts(n).length > 1 ? `Video ${vDoneCount(n)}/${vparts(n).length}` : "Video"));
+    if (LES[n].prac) steps.push(st(pracOk(n) === nReq(LES[n].prac), `Luyện tập ${pracOk(n)}/${nReq(LES[n].prac)}${nOpt(LES[n].prac) ? ` + ${nOpt(LES[n].prac)} khuyến khích` : ""}`));
+    if (LES[n].gh) steps.push(st(ghOk(n) === nReq(LES[n].gh), `Ghép bước ${ghOk(n)}/${nReq(LES[n].gh)}${nOpt(LES[n].gh) ? ` + ${nOpt(LES[n].gh)} khuyến khích` : ""}`));
+    const started = x.seen > 0 || x.vp || Object.keys(x.prac).length || Object.keys(x.gh).length;
+    return `<div class="lesson ${done ? "done" : open ? "on" : ""}"><div class="n">${done ? "✓" : BADGE[n]}</div><div><b>${LABEL[n]}${n === 2 ? "" : "."} ${n === 2 ? `<span class="sub">· ${LESSONS[1]}</span>` : LESSONS[n - 1]}</b><div class="steps">${steps.join("")}${open ? "" : `<span class="step lockt">🔒 ${lockTxt(k)}</span>`}</div></div>
+    ${open ? `<button class="btn" data-go="lesson" data-n="${n}">${done ? "Xem lại" : started ? "Tiếp tục" : "Bắt đầu"}</button>` : `<span class="note">Khóa</span>`}</div>`; };
+  const trow = id => { const T = TESTS[id], k = "T" + id, open = unitOpen(k), b = testBest(id), R = S.T[id];
+    const info = R ? (testDone(id) ? st(true, `Đạt ${d10(b)} điểm`) : `<span class="step bad">Cao nhất ${d10(b)} · chưa đạt 7,0</span>`) : `<span class="step">${T.n || T.items.length} câu · ${T.phut} phút · cần đạt từ 7,0</span>`;
+    return `<div class="lesson test ${testDone(id) ? "done" : open ? "on" : ""}"><div class="n">${testDone(id) ? "✓" : "★"}</div><div><b>${T.ten}</b><div class="steps">${info}${open ? "" : `<span class="step lockt">🔒 ${lockTxt(k)}</span>`}</div></div>
+    ${open ? `<button class="btn or" data-go="test" data-t="${id}">${R ? (testDone(id) ? "Xem kết quả" : "Làm lại") : "Làm bài"}</button>` : `<span class="note">Khóa</span>`}</div>`; };
+  const xrow = id => { const T = TESTS[id], open = extraOpen(T), R = S.T[id];
+    return `<div class="lesson xtra ${open ? "on" : ""}"><div class="n">+</div><div><b>${T.ten}</b> <span class="kk">Tự chọn</span><div class="steps"><span class="step">${R ? `Đã làm ${R.n} bộ · cao nhất ${d10(R.best)}` : `${T.n} câu · bộ đề mới mỗi lần`}</span>${open ? "" : `<span class="step lockt">🔒 Mở cùng ${uName({n: CHANGS[T.ci].bai[0]})}</span>`}</div></div>
+    ${open ? `<button class="btn ghost" data-go="test" data-t="${id}">${R ? "Làm bộ mới" : "Luyện"}</button>` : `<span class="note">Khóa</span>`}</div>`; };
+  app.innerHTML = `<div class="pane"><div class="ring"><svg width="90" height="90" viewBox="0 0 90 90" role="img" aria-label="Hoàn thành ${p}%"><circle cx="45" cy="45" r="${r}" fill="none" stroke="var(--line)" stroke-width="10"/><circle cx="45" cy="45" r="${r}" fill="none" stroke="var(--or)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C * p / 100} ${C}" transform="rotate(-90 45 45)"/><text x="45" y="51" text-anchor="middle" font-size="18" font-weight="800" fill="currentColor">${p}%</text></svg>
+  <div><h1>${esc(S.name)}</h1><div class="note">Em đã hoàn thành ${p}% chuyên đề.</div></div></div>
+  <details class="rules"><summary>Quy tắc đi tiếp</summary><ol><li>Học lần lượt từ trên xuống. Xong phần trước mới mở phần sau.</li><li>Video: xem hết, không tua tới; trả lời đúng các câu hỏi khi video dừng.</li><li>Luyện tập: làm đúng tất cả các câu bắt buộc. Câu <b>Khuyến khích</b> không bắt buộc. Chọn sai thì phải mở gợi ý rồi mới chọn tiếp.</li><li>Ghép bước: ghép đúng cả bài trong một lượt không sai bước nào. Lượt nào có sai thì ghép lại.</li><li>Muốn luyện thêm: mỗi chặng có mục <b>Luyện thêm</b>, mỗi lần làm là một bộ đề mới, không ảnh hưởng việc qua chặng.</li><li>Kiểm tra chặng: đạt từ 7,0 điểm mới qua chặng. Chưa đạt thì xem lại lỗi rồi làm lại.</li></ol></details></div>
+  ${PREVIEW ? `<div class="pane warn">Đang mở khóa toàn bộ để giáo viên xem thử trên máy này. <button class="btn ghost" data-act="unpreview" style="min-height:38px;padding:4px 12px">Tắt chế độ xem thử</button></div>` : ""}
+  <div class="pane"><h2>Lộ trình chuyên đề</h2>${CHANGS.map((c, ci) => `<h3 class="chang">Chặng ${ci + 1} · ${c.ten}</h3>` + c.bai.map(row).join("") + trow(c.test) + xrow("x" + (ci + 1))).join("")}
+  <h3 class="chang">Về đích</h3>${trow("ck")}</div>
+  <div class="row"><button class="btn" data-go="bot" data-free="1">Hỏi trợ lý gợi ý</button><button class="btn ghost" data-go="logout">Đổi tên</button></div>`;
+}
+
+/* ===== Bài học: video, luyện tập, ghép bước ===== */
+let vid = null, curCp = null, GW = {}, FROMHOME = false;
+function lesson() {
+  const n = CUR, Ls = LES[n], x = ls(n), V = Ls.video, vd = videoDone(n) || PREVIEW;
+  if (!unitOpen("L" + n)) { screen = "home"; return home(); }
+  let h = back() + `<div class="pane"><div class="note">Chặng ${UNITS[unitIdx("L" + n)].ci + 1} · ${LABEL[n]}</div><h1>${n === 2 ? "Luyện tập Chặng 1 · " + LESSONS[1] : LESSONS[n - 1]}</h1>`;
+  if (V === "pending") h += `<div class="lock">Cô đang chuẩn bị video cho bài này. Bài sẽ mở khi có video.${PREVIEW ? "<br><b>Chế độ xem thử:</b> phần bài tập bên dưới đã mở để cô xem." : ""}</div>`;
+  else if (V) { const PS = vparts(n); if (CURP >= PS.length || (!PREVIEW && CURP > vDoneCount(n))) CURP = Math.min(vDoneCount(n), PS.length - 1); const VP = PS[CURP], xp = vpart(n, CURP);
+  if (PS.length > 1) h += `<p class="note">Bước 1: xem lần lượt ${PS.length} video. Xem hết video trước thì video sau mới mở.</p><div class="vtabs">${PS.map((q, k) => { const ok = partDone(n, k), op = PREVIEW || k <= vDoneCount(n);
+    return `<button class="vtab ${k === CURP ? "cur" : ""} ${ok ? "ok" : ""}" data-vp="${k}" ${op ? "" : "disabled"}><b>${ok ? "✓" : op ? k + 1 : "🔒"}</b> ${esc(q.ten)}<span>${fmt(q.dur)}</span></button>`; }).join("")}</div>`;
+  h += `<p class="note">${PS.length > 1 ? `<b>Video ${CURP + 1}: ${esc(VP.ten)}.</b> ` : "Bước 1: xem hết video. "}${VP.cp && VP.cp.length ? "Video dừng ở mỗi vạch cam để hỏi em. " : ""}Không tua tới được, chỉ xem lại được đoạn đã xem.</p>
+  <div class="player"><video id="v" src="${VP.src}" playsinline preload="auto"></video><div class="ov" id="ov" hidden></div></div>
+  <div class="ctr"><button class="play" id="pp" aria-label="Phát">▶</button><div class="bar" id="bar"><div class="seen" id="seen"></div><div class="cur" id="cur"></div>${(VP.cp || []).map((c, i) => `<div class="mk ${xp.cps[i] ? "ok" : ""}" style="left:${c.t / VP.dur * 100}%" title="Câu hỏi ${i + 1}"></div>`).join("")}</div><span class="time" id="tm">00:00 / ${fmt(VP.dur)}</span></div>
+  <div class="msg" id="vmsg"></div>`; }
+  else h += `<p class="note">Bài này không có video. Em làm đúng tất cả các câu để hoàn thành bài.</p>`;
+  h += `</div>`;
+  const stepNo = V ? 2 : 1;
+  if (Ls.prac) h += `<div class="pane"><h2>Bước ${stepNo} · Luyện tập (<span id="cnt-p">${pracOk(n)}</span>/${nReq(Ls.prac)})</h2>${vd ? `<p class="note">Làm đúng tất cả các câu bắt buộc. Câu có nhãn <span class="kk">Khuyến khích</span> không bắt buộc, làm được thì tốt. Chọn sai thì mở gợi ý rồi mới được chọn tiếp. Bí quá thì bấm "Hỏi trợ lý".</p>` + Ls.prac.map((_, i) => pq(i)).join("") : `<div class="lock">Xem hết video để mở phần luyện tập.</div>`}</div>`;
+  if (Ls.gh) h += `<div class="pane"><h2>Bước ${stepNo} · Ghép các bước thành bài giải (<span id="cnt-g">${ghOk(n)}</span>/${nReq(Ls.gh)})</h2>${vd ? `<p class="note">Chạm vào các bước theo đúng thứ tự để tạo bài giải hoàn chỉnh. Có bước gài lỗi, em đừng chọn. Bài có nhãn <span class="kk">Khuyến khích</span> không bắt buộc. Bài chỉ tính hoàn thành khi em ghép đúng trong một lượt không sai bước nào.</p>` + Ls.gh.map((_, i) => gq(i)).join("") : `<div class="lock">Xem hết video để mở phần ghép bước.</div>`}</div>`;
+  app.innerHTML = h;
+  if (hasVideo(n)) setupVideo();
+}
+function perm(n, i, len) { const x = ls(n); if (!x.perm[i] || x.perm[i].length !== len) { x.perm[i] = shuffle([...Array(len).keys()]); save(); } return x.perm[i]; }
+function pq(i) {
+  const n = CUR, q = LES[n].prac[i], a = ls(n).prac[i] || {w: [], h: 0}, P = perm(n, i, q.o.length);
+  const canPick = !a.ok && a.w.length <= a.h, last = a.w[a.w.length - 1];
+  let fb = "";
+  if (a.ok) fb = `<div class="fb okc"><b>Đúng.</b> ${M(q.sol)}</div>`;
+  else if (a.w.length) { const c = q.e[last]; fb = `<div class="fb">${c ? `<span class="code">${c}</span>${M(ERRN[c])}. ` : "Chưa đúng. "}${canPick ? "Em chọn lại nhé." : `<b>Em mở gợi ý${a.h ? " tiếp theo" : ""} rồi mới chọn lại được.</b>`}</div>`; }
+  const hintBtn = a.h < q.h.length ? `<button class="btn ghost sm" data-h="${i}">${a.h ? "Gợi ý tiếp" : "Gợi ý"} (${a.h}/${q.h.length})</button>` : "";
+  const full = !a.ok && a.h >= q.h.length && a.w.length > a.h ? `<button class="btn ghost sm" data-full="${i}">Xem hướng dẫn chi tiết</button>` : "";
+  return `<div class="item" id="pq-${i}"><div class="qt">Câu ${i + 1}. ${q.opt ? '<span class="kk">Khuyến khích</span> ' : ""}${M(q.q)}</div><div class="opts">${P.map((o, p) => {
+      const cls = a.ok && o === q.a ? "ok" : a.w.includes(o) ? "no" : ""; const dis = a.ok || a.w.includes(o) || !canPick;
+      return `<button class="opt ${cls}" data-p="${i}" data-o="${o}" ${dis ? "disabled" : ""}><b>${"ABCD"[p]}.</b><span class="ot">${M(q.o[o])}</span></button>`; }).join("")}</div>${fb}
+    ${q.h.slice(0, a.h).map((t, k) => `<div class="hintbox"><b>Gợi ý ${k + 1}:</b> ${M(t)}</div>`).join("")}
+    ${a.full && !a.ok ? `<div class="hintbox"><b>Hướng dẫn chi tiết:</b> ${M(q.st.join(" = "))}. ${M(q.sol)}</div>` : ""}
+    ${a.ok ? "" : `<div class="row" style="margin-top:10px">${hintBtn}${full}<button class="btn ghost sm" data-ask="${i}">Hỏi trợ lý</button></div>`}</div>`;
+}
+function ghCards(g) { const c = {}; g.s.forEach((t, k) => c["s" + k] = t); (g.d || []).forEach((d, k) => c["d" + k] = d[0]); return c; }
+function ghNew(g) { return {ord: [], pool: shuffle(Object.keys(ghCards(g))), att: 0, msg: "", bad: -1, sol: false}; }
+function gq(i) {
+  const n = CUR, g = LES[n].gh[i], x = ls(n).gh[i] || {}, W = GW[n + ":" + i] || (GW[n + ":" + i] = ghNew(g)), C = ghCards(g);
+  if (x.done && !W.again) return `<div class="item done" id="gq-${i}"><div class="qt">Bài ${i + 1}. ${g.opt ? '<span class="kk">Khuyến khích</span> ' : ""}${M(g.q)}</div><ol class="ghsol">${g.s.map(t => `<li>${M(t)}</li>`).join("")}</ol><div class="fb okc"><b>✓ Hoàn thành.</b></div><div class="row"><button class="btn ghost sm" data-gagain="${i}">Ghép lại để luyện thêm</button></div></div>`;
+  return `<div class="item" id="gq-${i}"><div class="qt">Bài ${i + 1}. ${g.opt ? '<span class="kk">Khuyến khích</span> ' : ""}${M(g.q)}</div>
+    <div class="note">Bài giải của em${x.solves ? ` · đã ghép đúng ${x.solves} lần nhưng còn sai bước, cần một lượt không sai` : ""}:</div>
+    <ol class="ghans">${W.ord.length ? W.ord.map((id, k) => `<li><button class="card ${k === W.bad ? "no" : k < W.bad || W.bad === -2 ? "ok" : ""}" data-gr="${i}:${k}" aria-label="Bỏ bước này"><span class="ct">${M(C[id])}</span><span class="x" aria-hidden="true">✕</span></button></li>`).join("") : `<li class="empty">Chạm vào các bước bên dưới theo đúng thứ tự.</li>`}</ol>
+    <div class="note">Các bước để chọn:</div><div class="pool">${W.pool.filter(id => !W.ord.includes(id)).map(id => `<button class="card" data-ga="${i}:${id}"><span class="ct">${M(C[id])}</span></button>`).join("") || `<span class="note">Đã dùng hết các bước.</span>`}</div>
+    ${W.msg ? `<div class="fb ${W.msgok ? "okc" : ""}">${W.msg}</div>` : ""}
+    ${W.sol ? `<div class="hintbox"><b>Lời giải mẫu:</b><ol>${g.s.map(t => `<li>${M(t)}</li>`).join("")}</ol>Em đọc kĩ, rồi bấm "Ẩn lời giải" và tự ghép lại.</div>` : ""}
+    <div class="row" style="margin-top:10px"><button class="btn sm" data-gc="${i}" ${W.ord.length ? "" : "disabled"}>Kiểm tra</button><button class="btn ghost sm" data-gx="${i}" ${W.ord.length ? "" : "disabled"}>Xóa hết</button>${W.att >= 3 || W.sol ? `<button class="btn ghost sm" data-gs="${i}">${W.sol ? "Ẩn lời giải" : "Xem lời giải mẫu"}</button>` : ""}</div></div>`;
+}
+function ghCheck(i) {
+  const n = CUR, g = LES[n].gh[i], W = GW[n + ":" + i], x = ls(n).gh[i] || (ls(n).gh[i] = {fails: 0, solves: 0});
+  let bad = W.ord.findIndex((id, k) => id !== "s" + k);
+  { const full = bad === -1 && W.ord.length === g.s.length, id = bad >= 0 ? W.ord[bad] : "";
+    if (full || bad >= 0) logEv({k: "Ghép bước", bai: LABEL[n], cau: "Bài " + (i + 1) + ": " + plain(g.q), kq: full ? (W.att === 0 && !W.used ? "hoàn thành" : "đúng, phải ghép lại") : "sai bước " + (bad + 1), ma: id[0] === "d" ? g.d[+id.slice(1)][1] : ""}); }
+  if (bad === -1 && W.ord.length === g.s.length) {
+    if (W.att === 0 && !W.used) { x.done = true; x.solves = (x.solves || 0) + 1; W.again = false; save("Hoàn thành bài ghép bước."); GW[n + ":" + i] = ghNew(g); checkLessonDone(n); }
+    else { x.solves = (x.solves || 0) + 1; save(); const k = ghNew(g); k.msg = `Đúng rồi! Lượt này em đã sai ${W.att} lần${W.used ? " và có xem lời giải" : ""}. Ghép lại một lần nữa, không sai bước nào, để hoàn thành bài này.`; k.msgok = true; GW[n + ":" + i] = k; }
+  } else if (bad === -1) { W.bad = -2; W.msg = `${W.ord.length} bước đầu đều đúng. Em ghép tiếp nhé.`; W.msgok = true; }
+  else { W.att++; x.fails = (x.fails || 0) + 1; save(); W.bad = bad; W.msgok = false; const id = W.ord[bad];
+    if (id[0] === "d") { const d = g.d[+id.slice(1)]; W.msg = `Bước ${bad + 1} chưa đúng. <span class="code">${d[1]}</span>${M(ERRN[d[1]])}. ${M(d[2] || "")} Em bỏ bước đó và chọn lại.`; }
+    else W.msg = `Bước ${bad + 1} chưa đúng thứ tự. Em xem lại: trước bước này cần làm gì?`;
+    if (W.att >= 3 && !W.sol) W.msg += " Em có thể xem lời giải mẫu, nhưng sau đó phải tự ghép lại một lượt không sai."; }
+  document.getElementById("gq-" + i).outerHTML = gq(i); const c = document.getElementById("cnt-g"); if (c) c.textContent = ghOk(n);
+}
+function checkLessonDone(n) { if (lessonDone(n)) { const k = unitIdx("L" + n), nx = UNITS[k + 1]; toast(`Em đã hoàn thành ${LABEL[n]}.${nx ? " Đã mở " + uName(nx) + "." : ""}`); lesson(); } }
+
+function setupVideo() {
+  const n = CUR, V = vparts(n)[CURP], CP = V.cp || [], x = vpart(n, CURP), PS = vparts(n);
+  vid = document.getElementById("v");
+  const pp = document.getElementById("pp"), bar = document.getElementById("bar"), ov = document.getElementById("ov"), msg = document.getElementById("vmsg");
+  const D = () => vid.duration || V.dur;
+  const draw = () => { document.getElementById("seen").style.width = Math.min(100, x.seen / D() * 100) + "%"; document.getElementById("cur").style.width = vid.currentTime / D() * 100 + "%";
+    document.getElementById("tm").textContent = fmt(vid.currentTime) + " / " + fmt(D()); pp.textContent = vid.paused ? "▶" : "❚❚"; pp.setAttribute("aria-label", vid.paused ? "Phát" : "Tạm dừng"); };
+  vid.addEventListener("contextmenu", e => e.preventDefault());
+  const resume = () => { if (x.seen > 0 && vid.currentTime < 0.5 && !x.video) vid.currentTime = Math.min(x.seen, D() - 0.5); draw(); };
+  vid.addEventListener("loadedmetadata", resume); if (vid.readyState >= 1) resume();
+  vid.addEventListener("ratechange", () => { if (vid.playbackRate !== 1) vid.playbackRate = 1; });
+  vid.addEventListener("seeking", () => { if (vid.currentTime > x.seen + 1) { vid.currentTime = x.seen; msg.textContent = "Không tua tới được. Em xem tiếp từ đoạn đã xem nhé."; } });
+  vid.addEventListener("timeupdate", () => { const t = vid.currentTime;
+    if (!vid.seeking && t <= x.seen + 1.5 && t > x.seen) { x.seen = t; if (Math.floor(t) % 5 === 0) save(); }
+    const i = CP.findIndex((c, k) => !x.cps[k] && t >= c.t && x.seen >= c.t - 0.5);
+    if (i >= 0 && curCp === null) { vid.pause(); x.seen = Math.max(x.seen, CP[i].t); vid.currentTime = CP[i].t; ask(i); }
+    draw(); });
+  vid.addEventListener("play", () => { if (curCp !== null) vid.pause(); msg.textContent = ""; draw(); });
+  vid.addEventListener("pause", () => { save(); draw(); });
+  vid.addEventListener("ended", () => { x.seen = D(); if (!x.video && CP.every((c, k) => x.cps[k])) { x.video = true; const more = CURP + 1 < PS.length; if (more) CURP++; save(more ? `Em đã xem xong video ${CURP}. Video ${CURP + 1} đã mở.` : "Em đã xem hết video. Phần tiếp theo đã mở."); lesson(); scrollTo(0, 0); } else save(); });
+  pp.onclick = () => { if (curCp !== null) return; vid.paused ? vid.play().catch(() => msg.textContent = "Bấm lại nút phát nhé.") : vid.pause(); };
+  bar.onclick = e => { const r = bar.getBoundingClientRect(), t = (e.clientX - r.left) / r.width * D();
+    if (t > x.seen + 0.5) { msg.textContent = "Không tua tới được. Chỉ xem lại được đoạn đã xem (phần màu đậm)."; return; } vid.currentTime = t; msg.textContent = ""; };
+  function ask(i, chosen) {
+    curCp = i; const c = CP[i]; ov.hidden = false; const wrong = chosen !== undefined && chosen !== c.a;
+    ov.innerHTML = `<div class="box"><div class="note" style="color:#F9AF28">Câu hỏi ${i + 1}/${CP.length} · video đã dừng</div><div class="qt" style="margin-top:6px">${M(c.q)}</div><div class="opts">${c.o.map((o, k) =>
+      `<button class="opt ${chosen === k ? (k === c.a ? "ok" : "no") : ""}" data-cp="${k}"><b>${"ABCD"[k]}.</b><span class="ot">${M(o)}</span></button>`).join("")}</div>
+      ${wrong ? `<p>Chưa đúng. Em xem lại đoạn vừa rồi rồi trả lời lại.</p><button class="btn or" id="rew">Xem lại đoạn này</button>` : ""}</div>`;
+    ov.querySelectorAll("[data-cp]").forEach(b => b.onclick = () => { const k = +b.dataset.cp;
+      logEv({k: "Câu hỏi trong video", bai: LABEL[n] + (PS.length > 1 ? " · video " + (CURP + 1) : ""), cau: "Câu dừng " + (i + 1) + ": " + plain(c.q), kq: k === c.a ? "đúng" : "sai"});
+      if (k === c.a) { x.cps[i] = true; save(); ov.innerHTML = `<div class="box"><h2>Đúng rồi!</h2><p style="line-height:2">${M(c.ex)}</p><button class="btn or" id="cont">Xem tiếp</button></div>`;
+        document.getElementById("cont").onclick = () => { ov.hidden = true; curCp = null; document.querySelectorAll(".bar .mk")[i].classList.add("ok"); vid.play(); }; }
+      else if (chosen !== undefined && chosen !== c.a) { /* sai lần hai: bắt buộc xem lại */ ov.innerHTML = `<div class="box"><h2>Em xem lại đoạn này nhé</h2><p>Em đã trả lời sai hai lần. Video sẽ phát lại từ ${fmt(c.from)} rồi hỏi lại.</p><button class="btn or" id="rew2">Xem lại</button></div>`;
+        document.getElementById("rew2").onclick = () => { ov.hidden = true; curCp = null; vid.currentTime = c.from; vid.play(); }; }
+      else ask(i, k); });
+    const rw = document.getElementById("rew"); if (rw) rw.onclick = () => { ov.hidden = true; curCp = null; vid.currentTime = c.from; vid.play(); };
+  }
+}
+document.addEventListener("visibilitychange", () => { if (document.hidden && vid && !vid.paused) { vid.pause(); const m = document.getElementById("vmsg"); if (m) m.textContent = "Video đã dừng vì em rời khỏi trang."; } });
+
+/* ===== Kiểm tra ===== */
+const DSP = [0, .1, .25, .5, 1]; // đúng 0..4 ý của câu đúng/sai
+function itemScore(it, ans) {
+  if (it.t === "m") return ans === it.a ? it.p : 0;
+  if (it.t === "d") { const k = (ans || []).filter((v, j) => v === it.s[j][1]).length; return DSP[k] * it.p; }
+  const ord = ans || [], n = it.s.length; let pre = 0; while (pre < ord.length && ord[pre] === "s" + pre) pre++;
+  return ord.length === n && pre === n ? it.p : Math.min(pre, n - 1) / n * it.p;
+}
+function testScreen() {
+  const id = TID, T = TESTS[id], R = S.T[id];
+  if (!(T.extra ? extraOpen(T) : unitOpen("T" + id))) { screen = "home"; return home(); }
+  if (exam && exam.id === id) return examView();
+  if (R && !R.retake && !(T.extra && FROMHOME)) return result();
+  const n = R ? R.n + 1 : 1, NQ = T.n || T.items.length;
+  app.innerHTML = back() + `<div class="pane login" style="margin-top:4vh;max-width:560px"><h1>${T.ten}</h1><p>${T.mo}</p>
+    <ul class="note"><li>${NQ} câu · ${T.phut} phút · thang điểm 10.</li>${T.extra ? "<li>Bài luyện thêm, <b>không bắt buộc</b>, không ảnh hưởng việc qua chặng. Mỗi lần làm là một bộ đề mới.</li>" : `<li>Cần đạt từ <b>7,0 điểm</b> mới qua${id === "ck" ? "" : " chặng"}.</li>`}${T.gen && !T.extra ? "<li>Các câu đúng/sai được tạo mới mỗi lần làm.</li>" : ""}<li>Đồng hồ chạy ngay khi bấm Bắt đầu. Hết giờ bài tự nộp.</li>${(T.gen || T.items.some(x => x.t === "d")) ? "<li>Câu đúng/sai: mỗi câu có 4 ý; đúng 1 ý được 0,1, 2 ý 0,25, 3 ý 0,5, cả 4 ý được trọn điểm câu.</li>" : ""}${(T.items || []).some(x => x.t === "g") || id === "c3" ? "<li>Câu ghép bước: đúng đến bước nào được điểm đến bước đó; có bước gài lỗi.</li>" : ""}${n > 1 && !T.extra ? `<li>Đây là lần làm thứ ${n}. Thứ tự câu và đáp án đã được đảo.</li>` : ""}</ul>
+    <button class="btn or" id="start">Bắt đầu làm bài</button></div>`;
+  document.getElementById("start").onclick = () => {
+    const seed = Math.floor(Math.random() * 1e9), items = T.gen ? T.gen(seed) : T.items;
+    exam = {id, seed, items, ord: shuffle([...items.keys()]), perm: {}, pick: {}, flag: {}, i: 0, end: Date.now() + T.phut * 60000};
+    items.forEach((it, k) => { if (it.t === "m") exam.perm[k] = shuffle([...it.o.keys()]); if (it.t === "g") exam.perm[k] = shuffle(Object.keys(ghCards(it))); });
+    examView(); };
+}
+const answered = (it, a) => it.t === "m" ? a !== undefined : it.t === "d" ? !!a && a.some(v => v !== null && v !== undefined) : !!a && a.length > 0;
+function examView() {
+  save(); clearInterval(tick); tick = setInterval(timer, 1000);
+  const T = TESTS[exam.id], IT = exam.items, k = exam.ord[exam.i], it = IT[k], a = exam.pick[k], left = Math.max(0, (exam.end - Date.now()) / 1000);
+  let body = "";
+  if (it.t === "m") body = `<div class="opts" style="grid-template-columns:minmax(0,1fr)">${exam.perm[k].map((o, p) => `<button class="opt ${a === o ? "sel" : ""}" data-e="${o}"><b>${"ABCD"[p]}.</b><span class="ot">${M(it.o[o])}</span></button>`).join("")}</div>`;
+  else if (it.t === "d") body = `<table class="ds"><thead><tr><th>Ý</th><th>Khẳng định</th><th class="c">Đúng</th><th class="c">Sai</th></tr></thead><tbody>${it.s.map((s, j) => `<tr><td>${"abcd"[j]})</td><td>${M(s[0])}</td>${[true, false].map(v => `<td class="c"><button class="tf ${a && a[j] === v ? "sel" : ""}" data-ds="${j}:${v ? 1 : 0}" aria-label="${"abcd"[j]} ${v ? "Đúng" : "Sai"}">${v ? "Đ" : "S"}</button></td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  else { const C = ghCards(it), ord = a || []; body = `<div class="note">Bài giải của em:</div><ol class="ghans">${ord.length ? ord.map((id, j) => `<li><button class="card" data-tr="${j}"><span class="ct">${M(C[id])}</span><span class="x" aria-hidden="true">✕</span></button></li>`).join("") : `<li class="empty">Chạm vào các bước bên dưới theo đúng thứ tự.</li>`}</ol>
+    <div class="note">Các bước để chọn:</div><div class="pool">${exam.perm[k].filter(id => !ord.includes(id)).map(id => `<button class="card" data-ta="${id}"><span class="ct">${M(C[id])}</span></button>`).join("")}</div>`; }
+  app.innerHTML = `<div class="exam" style="margin-top:18px"><section class="pane" style="margin:0"><div class="note">${T.ten} · Câu ${exam.i + 1}/${IT.length} · ${d10(it.p)} điểm${it.lv ? ` · ý d: ${it.lv}` : ""}</div><div class="qt" style="margin-top:6px">${M(it.q)}</div>${body}
+    <div class="row" style="margin-top:16px;justify-content:space-between"><button class="btn ghost" data-nav="-1" ${exam.i ? "" : "disabled"}>Câu trước</button><button class="btn ghost" id="flag">${exam.flag[k] ? "Bỏ đánh dấu" : "Đánh dấu xem lại"}</button><button class="btn" data-nav="1" ${exam.i < IT.length - 1 ? "" : "disabled"}>Câu sau</button></div></section>
+    <aside class="pane" style="margin:0"><div class="note">Thời gian còn lại</div><div class="timer ${left < 60 ? "low" : ""}" id="clock">${fmt(left)}</div>
+    <div class="note" style="margin:10px 0 6px">Đã làm ${exam.ord.filter(q => answered(IT[q], exam.pick[q])).length}/${IT.length}</div><div class="grid">${exam.ord.map((q, j) => `<button class="num ${answered(IT[q], exam.pick[q]) ? "done" : ""} ${exam.flag[q] ? "flag" : ""} ${j === exam.i ? "cur" : ""}" data-j="${j}">${j + 1}</button>`).join("")}</div>
+    <button class="btn or" style="width:100%;margin-top:14px" id="submit">Nộp bài</button></aside></div>`;
+}
+function timer() { if (!exam) return clearInterval(tick); const left = (exam.end - Date.now()) / 1000, c = document.getElementById("clock"); if (c) { c.textContent = fmt(left); c.classList.toggle("low", left < 60); } if (left <= 0) finish(); }
+function finish() {
+  clearInterval(tick); const T = TESTS[exam.id], sc = exam.items.reduce((s, it, k) => s + itemScore(it, exam.pick[k]), 0), score = Math.round(sc * 100) / 100;
+  const R = S.T[exam.id] || {n: 0, best: 0}; R.n++; R.best = Math.max(R.best || 0, score); R.last = {score, pick: exam.pick, ord: exam.ord, perm: exam.perm, items: exam.items, at: Date.now()}; R.retake = false; R.hist = (R.hist || []).concat(score); S.T[exam.id] = R;
+  exam.items.forEach((it, k) => { const a = exam.pick[k], sc_ = itemScore(it, a), code = it.t === "m" ? (it.e[a] || "") : it.t === "d" ? (sc_ < it.p ? it.e : "") : ((a || []).map(x => x[0] === "d" ? it.d[+x.slice(1)][1] : "").find(Boolean) || "");
+    logEv({k: T.extra ? "Luyện thêm" : "Kiểm tra", bai: T.ten, cau: (T.gen ? "" : "Câu " + (k + 1) + ": ") + plain(it.q), kq: a === undefined ? "bỏ trống" : sc_ >= it.p ? "đúng" : sc_ > 0 ? "đúng một phần" : "sai", ma: code, diem: Math.round(sc_ * 100) / 100}); });
+  logEv({k: "Điểm bài", bai: T.ten, cau: "Lần " + R.n, kq: score >= PASS ? "đạt" : "chưa đạt", diem: score});
+  const id = exam.id; exam = null; S.ex = undefined; sync(true); save(T.extra ? "Đã nộp bài luyện thêm." : score >= PASS ? "Đã nộp bài. Em đã đạt!" : "Đã nộp bài. Điểm đã được gửi cho cô."); TID = id; result();
+}
+function result() {
+  const id = TID, T = TESTS[id], R = S.T[id], r = R.last, errs = {}, pass = r.score >= PASS, IT = r.items || T.items;
+  IT.forEach((it, k) => { const a = r.pick[k]; if (itemScore(it, a) < it.p) { const c = it.t === "m" ? it.e[a] : it.t === "d" ? it.e : (a || []).map(x => x[0] === "d" ? it.d[+x.slice(1)][1] : null).find(Boolean); if (c) errs[c] = (errs[c] || 0) + 1; } });
+  const nx = UNITS[unitIdx("T" + id) + 1];
+  const head = T.extra ? `<div class="banner ${pass ? "ok" : "no"}">${pass ? "<b>Tốt lắm!</b>" : "<b>Cố lên!</b>"} Bài luyện thêm không ảnh hưởng việc qua chặng. Em xem lại lỗi rồi làm bộ đề mới nhé.</div>` : pass ? `<div class="banner ok"><b>Đạt!</b> ${nx ? `Em đã mở ${uName(nx)}.` : "Em đã về đích chuyên đề. Chúc mừng em!"}</div>`
+    : `<div class="banner no"><b>Chưa đạt 7,0.</b> Em đọc kĩ phần xem lại bên dưới, ôn đúng lỗi của mình, rồi làm lại. Lần sau thứ tự câu và đáp án sẽ khác.</div>`;
+  const rv = r.ord.map((k, j) => { const it = IT[k], a = r.pick[k], s = itemScore(it, a); let b = "";
+    if (it.t === "m") b = `<div class="opts">${r.perm[k].map((o, p) => `<div class="opt ${o === it.a ? "ok" : o === a ? "no" : ""}"><b>${"ABCD"[p]}.</b><span class="ot">${M(it.o[o])}</span></div>`).join("")}</div>${a !== undefined && a !== it.a && it.e[a] ? `<div class="fb"><span class="code">${it.e[a]}</span>${M(KNOW[it.e[a]])}</div>` : a === undefined ? `<div class="fb note">Em bỏ trống câu này.</div>` : ""}`;
+    else if (it.t === "d") b = `<table class="ds"><tbody>${it.s.map((x, q) => { const v = a ? a[q] : null; return `<tr><td>${"abcd"[q]})</td><td>${M(x[0])}</td><td class="c"><span class="tag ${v === x[1] ? "ok" : "no"}">Em: ${v === true ? "Đ" : v === false ? "S" : "–"}</span></td><td class="c">Đáp án: <b>${x[1] ? "Đ" : "S"}</b></td></tr>`; }).join("")}</tbody></table>`;
+    else { const C = ghCards(it); b = `<div class="two"><div><div class="note">Bài của em</div><ol class="ghsol">${(a || []).map((x, q) => `<li class="${x === "s" + q ? "okc" : "noc"}">${M(C[x])}</li>`).join("") || "<li>Bỏ trống</li>"}</ol></div><div><div class="note">Bài giải đúng</div><ol class="ghsol">${it.s.map(t => `<li>${M(t)}</li>`).join("")}</ol></div></div>`; }
+    return `<div class="rv"><div class="qt">Câu ${j + 1}. ${M(it.q)} <span class="tag ${s >= it.p ? "ok" : s > 0 ? "mid" : "no"}">${d10(s)}/${d10(it.p)}</span>${it.lv ? ` <span class="note">ý d: ${it.lv}</span>` : ""}</div>${b}</div>`; }).join("");
+  app.innerHTML = back() + `<div class="pane"><div class="note">${T.ten} · lần ${R.n}</div><div class="row" style="gap:28px;align-items:flex-end"><div><div class="note">Điểm lần này</div><div class="big">${d10(r.score)}</div></div><div class="note">Điểm cao nhất: <b>${d10(R.best)}</b><br>Các lần: ${R.hist.map(d10).join(" · ")}</div></div>${head}
+    <div style="margin-top:12px">${Object.keys(errs).length ? "<b>Lỗi em mắc:</b>" + Object.entries(errs).map(([c, k]) => `<div class="fb"><span class="code">${c}</span>${M(ERRN[c])} · ${k} câu</div>`).join("") : "<b>Không mắc lỗi nào. Tuyệt vời!</b>"}</div></div>
+    <div class="pane"><h2>Xem lại bài</h2>${rv}${T.extra ? `<div class="row" style="margin-top:16px"><button class="btn or" data-act="retake">Làm bộ đề mới</button></div>` : !pass || id === "ck" ? `<div class="row" style="margin-top:16px"><button class="btn or" data-act="retake">${pass ? "Làm lại để cải thiện điểm" : "Làm lại bài kiểm tra"}</button></div>` : ""}</div>`;
+}
+
+/* ===== Trợ lý: gợi ý, kiểm tra từng bước, chỉ lỗi; bí quá mới hướng dẫn chi tiết ===== */
+const KB = [
+  {k:["khác nhau","so sánh căn bậc hai và căn bậc ba","giống nhau","khác gì"],a:"So sánh căn bậc hai và căn bậc ba:<ul><li>Căn bậc hai: chỉ số <b>không âm</b> mới có. Số dương có <b>hai</b> căn bậc hai đối nhau; √{a} luôn ≥ 0.</li><li>Căn bậc ba: <b>mọi số thực</b> đều có, và có <b>đúng một</b> căn bậc ba, cùng dấu với số đó.</li></ul>Em thử nghĩ: √{−8} và ∛{−8}, biểu thức nào có nghĩa?"},
+  {k:["căn bậc ba","lập phương"],a:"Căn bậc ba của số thực a là số x sao cho x³ = a. Muốn tìm ∛{a}, em hỏi: <b>số nào lập phương lên bằng a?</b> Số âm thì căn bậc ba cũng âm.<br>Em thử gõ: <i>căn bậc ba của −27 = ...</i> để mình kiểm tra."},
+  {k:["số học"],a:"Căn bậc hai số học của a (a ≥ 0) là √{a}, tức là căn bậc hai <b>không âm</b>. Ví dụ 25 có hai căn bậc hai là 5 và −5, còn căn bậc hai số học chỉ là √{25}.<br>Em thử: √{25} bằng bao nhiêu?"},
+  {k:["xác định","điều kiện","có nghĩa","đkxđ","dkxd"],a:"√{A} xác định khi <b>A ≥ 0</b>; có mẫu thì thêm <b>mẫu ≠ 0</b>; √{A} ở mẫu thì A > 0.<ol><li>Viết biểu thức dưới căn ≥ 0 (và mẫu ≠ 0).</li><li>Giải bất phương trình, nhớ chia cho số âm thì đổi chiều.</li><li>Kết hợp các điều kiện.</li></ol>Em gõ biểu thức của em (ví dụ: căn(6 − 2x)), mình chỉ ra những chỗ cần điều kiện."},
+  {k:["tuyệt đối","bỏ căn","hằng đẳng thức","a^2","a²"],a:"Công thức quan trọng: √{A²} = |A|.<ol><li>Xét dấu của A.</li><li>A ≥ 0 thì |A| = A; A < 0 thì |A| = −A.</li></ol>Ví dụ √{(1 − √{2})²}: so sánh 1 với √{2} trước. Em thử nhé."},
+  {k:["nhân hai căn","quy tắc nhân","khai căn một tích","nhân"],a:"Quy tắc nhân: với A, B ≥ 0, √{A} · √{B} = √{AB}. Dùng hai chiều: tách √{AB} khi mỗi thừa số khai căn được, hoặc gộp để được số chính phương.<br>Em thử: √{2} · √{8} gộp lại là căn của số nào?"},
+  {k:["quy tắc chia","khai căn một thương","chia"],a:"Quy tắc chia: với A ≥ 0, B > 0, \\f{√{A}}{√{B}} = √{\\f{A}{B}}. Tử, mẫu không khai căn được riêng thì gộp lại rồi rút gọn phân số trong căn.<br>Em thử: \\f{√{50}}{√{2}} gộp lại được căn của số nào?"},
+  {k:["tổng","hiệu","tách căn"],a:"Hai bẫy hay gặp:<ul><li><b>L2</b>: không tách căn của tổng, hiệu: √{9 + 16} phải cộng trước, = √{25}.</li><li><b>L4</b>: không tách khi có thừa số âm: √{(−4)(−9)} phải nhân trước, = √{36}.</li></ul>"},
+  {k:["trục căn","liên hợp","khử mẫu"],a:"Trục căn thức ở mẫu: nhân cả tử và mẫu với biểu thức liên hợp của mẫu.<ul><li>Mẫu √{B}: nhân với √{B}.</li><li>Mẫu √{A} + B: nhân với √{A} − B (đổi dấu ở giữa), rồi dùng (a + b)(a − b) = a² − b².</li></ul>Em viết thử biểu thức liên hợp của mẫu trong bài em đang làm."},
+  {k:["đưa thừa số","ra ngoài","vào trong"],a:"Đưa thừa số ra ngoài: tách số dưới căn thành tích có <b>số chính phương</b>, ví dụ 50 = 25 · 2 nên √{50} = 5√{2}.<br>Đưa vào trong: bình phương thừa số dương rồi nhân vào; thừa số âm thì để dấu trừ ngoài.<br>Em tách thử 72 thành tích có số chính phương lớn nhất."},
+  {k:["rút gọn"],a:"Các bước rút gọn biểu thức chứa căn:<ol><li>Ghi điều kiện xác định.</li><li>Phân tích các mẫu thành nhân tử, ví dụ x − 1 = (√{x} − 1)(√{x} + 1), x − 2√{x} = √{x}(√{x} − 2).</li><li>Quy đồng, bỏ ngoặc cẩn thận dấu trừ, thu gọn tử.</li><li>Rút gọn nhân tử chung.</li><li>Thử lại: thay một giá trị x vào đề và kết quả, hai bên phải bằng nhau.</li></ol>Em đang vướng ở bước nào?"},
+  {k:["nguyên"],a:"Tìm x nguyên để P nguyên:<ol><li>Tách P = số nguyên + \\f{k}{mẫu}.</li><li>x nguyên mà √{x} không nguyên thì P không nguyên, nên xét √{x} nguyên.</li><li>Mẫu là ước của k: viết đủ ước âm và ước dương.</li><li>Loại √{x} < 0, đối chiếu điều kiện.</li></ol>Em làm bước 1 rồi gõ cho mình xem."},
+  {k:["lớn hơn","nhỏ hơn","bé hơn","so sánh p"],a:"So sánh P với một số k:<ol><li>Xét hiệu P − k, quy đồng.</li><li>Nếu mẫu luôn dương thì chỉ xét dấu của tử.</li><li>Giải ra x, đối chiếu điều kiện.</li></ol>Không nhân chéo khi chưa biết dấu của mẫu."},
+  {k:["nhỏ nhất","lớn nhất","gtnn","gtln"],a:"Tìm giá trị nhỏ nhất, lớn nhất:<ol><li>Tách P = hằng số ± \\f{k}{biểu thức chứa √{x}}.</li><li>Dùng √{x} ≥ 0 để đánh giá mẫu.</li><li>Mẫu lớn thì phân số (tử dương) nhỏ: nhớ đổi chiều.</li><li>Chỉ ra x để dấu \"=\" xảy ra.</li></ol>"}];
+const GIVE = ["đáp án","dap an","lời giải","giải giúp","giải hộ","làm hộ","làm giúp","cho em kết quả","kết quả là gì","bằng bao nhiêu vậy","cho đáp"];
+const HELP = /gợi ý|goi y|\bbí\b|chịu|bó tay|không làm được|ko làm được|không biết|ko biết|k biết|khong biet|không hiểu|chưa hiểu|ko hiểu|help|làm sao|làm thế nào|bắt đầu|từ đâu|tiếp theo/;
+let chat = [], BOT = {ctx: null, last: null, lastTries: 0};
+const Mi = s => M(s); // markup → HTML
+function botSay(h) { chat.push({me: false, h}); }
+function meSay(t) { chat.push({me: true, h: esc(t)}); }
+function startTutor(n, i) {
+  const q = LES[n].prac[i], P = perm(n, i, q.o.length), a = ls(n).prac[i] || {w: [], h: 0};
+  BOT.ctx = {n, i, q, P, tries: 0, hint: a.h || 0, done: !!a.ok};
+  botSay(`Mình cùng em làm <b>${LABEL[n]} · Câu ${i + 1}</b>:<div class="qbox">${Mi(q.q)}<div class="mini">${P.map((o, p) => `<span><b>${"ABCD"[p]}.</b> ${Mi(q.o[o])}</span>`).join("")}</div></div>`
+    + (a.w.length ? `Em đã chọn sai ${a.w.length} lần. ` : "")
+    + `Em vướng ở đâu? Em có thể:<ul><li>gõ <b>gợi ý</b> để mình gợi ý bước tiếp theo,</li><li>gõ một bước em tính, ví dụ <i>căn 0,49 = 0,7</i>, mình kiểm tra giúp,</li><li>gõ kết quả hoặc chữ cái đáp án em chọn.</li></ul>`);
+}
+function itemVals(q) { return q.o.map(optInfo); }
+function stepNodes(q) { // các bước và biểu thức con, để nhận ra bước trung gian
+  const out = []; (q.st || []).forEach((s, k) => { const I = optInfo(s); if (I.n) { out.push({k, n: I.n, m: s}); walk(I.n, nd => { if (nd !== I.n && !["num", "var", "par", "neg"].includes(nd.t)) out.push({k, n: nd, m: toM(nd), sub: true}); if (nd.t === "sqrt" || nd.t === "cbrt") { const r = nd.a.t === "par" ? nd.a.a : nd.a; if (!["num", "var"].includes(r.t)) out.push({k, n: r, m: toM(r), sub: true}); } }); } else if (I.ineq) out.push({k, ineq: I.ineq, m: s}); });
+  return out;
+}
+function knowFor(q) { const cs = [...new Set(Object.values(q.e || {}))]; return cs.length ? `<div class="know"><b>Kiến thức cần dùng:</b> ${cs.map(c => Mi(KNOW[c])).join("<br>")}</div>` : ""; }
+function nextHint(C) { const q = C.q;
+  if (C.hint >= q.h.length && C.tries < 2) return `Em đã xem hết gợi ý: <b>${Mi(q.h[q.h.length - 1])}</b>${knowFor(q)}Em làm theo gợi ý này rồi gõ bước em tính được, mình kiểm tra. Nếu vẫn sai, mình sẽ hướng dẫn chi tiết.`;
+  if (C.hint < q.h.length) { const t = q.h[C.hint]; C.hint++; const a = ls(C.n).prac[C.i] || (ls(C.n).prac[C.i] = {w: [], h: 0}); a.h = Math.max(a.h || 0, C.hint); save(); return `<b>Gợi ý ${C.hint}:</b> ${Mi(t)}<br>Em làm thử bước đó rồi gõ kết quả cho mình.`; }
+  return detailed(C); }
+function detailed(C) { const q = C.q; C.done = true; const a = ls(C.n).prac[C.i] || (ls(C.n).prac[C.i] = {w: [], h: 0}); a.h = q.h.length; a.full = true; save();
+  return `<b>Hướng dẫn chi tiết từng bước:</b><ol>${q.h.map(t => `<li>${Mi(t)}</li>`).join("")}<li>Trình bày: ${Mi(q.sol)}</li></ol>${knowFor(q)}Em quay lại trang luyện tập, chọn đáp án ứng với kết quả này. Lần sau gặp dạng này em thử tự làm trước nhé.`; }
+function judgeOpt(C, o) { // o: chỉ số gốc của đáp án
+  const q = C.q;
+  if (o === q.a) { C.done = true; return `<b>Đúng rồi! ✓</b> ${Mi(q.sol)}<br>Em quay lại trang luyện tập và chọn đáp án này nhé.`; }
+  C.tries++; const c = q.e[o];
+  let h = `Chưa đúng. ${c ? `<span class="code">${c}</span>${Mi(ERRN[c])}.<div class="know">${Mi(KNOW[c])}</div>` : ""}`;
+  if (C.tries >= 3) return h + detailed(C);
+  return h + nextHint(C);
+}
+function verifyEq(parts, env, raw) { // kiểm tra chuỗi A = B = C
+  const lines = []; let allOk = true;
+  for (let k = 0; k + 1 < parts.length; k++) {
+    const A = parts[k], B = parts[k + 1], E = env || envs(raw), ok = sameVal(A, B, E);
+    const neg = negRad(A, E[0]) || negRad(B, E[0]);
+    if (neg) { lines.push(`✗ ${Mi(toM(A))} = ${Mi(toM(B))}: biểu thức dưới căn ${Mi(toM(neg))} âm nên không xác định. Không có số nào bình phương lên ra số âm.`); allOk = false; continue; }
+    if (ok) { lines.push(`✓ ${Mi(toM(A))} = ${Mi(toM(B))}`); continue; }
+    allOk = false; lines.push(`✗ ${Mi(toM(A))} = ${Mi(toM(B))} <b>chưa đúng</b>. ${diag(A, B, E)}`);
+  }
+  return {ok: allOk, h: lines.join("<br>")};
+}
+function negRad(n, e) { let f = null; walk(n, x => { if (!f && x.t === "sqrt" && ev(x.a, e) < -1e-12) f = x.a.t === "par" ? x.a.a : x.a; }); return f; }
+function diag(A, B, E) { // gợi ý vì sao sai, không đưa kết quả
+  const e = E[0], hv = hasVar(A) || hasVar(B);
+  const sumIn = X => X.t === "sqrt" && ["+", "-"].includes((X.a.t === "par" ? X.a.a : X.a).t);
+  const sumOf = X => ["+", "-"].includes(X.t) && (X.a.t === "sqrt" || X.b.t === "sqrt");
+  const sqProd = X => X.t === "sqrt" && (X.a.t === "par" ? X.a.a : X.a).t === "*" && JSON.stringify(X).includes('"neg"');
+  if (sqProd(A) || sqProd(B)) { const o = sqProd(A) ? B : A; let neg = null; walk(o, z => { if (z.t === "sqrt" && ev(z.a, {}) < 0) neg = z; }); if (neg) return Mi(KNOW.L4); }
+  if ((sumIn(A) && sumOf(B)) || (sumIn(B) && sumOf(A))) return Mi(KNOW.L2);
+  const sq = (X, Y) => (X.t === "sqrt" || X.t === "cbrt") && !hasVar(X) && !hasVar(Y) && Y.t !== "sqrt";
+  if (sq(A, B) || sq(B, A)) { const R = sq(A, B) ? A : B, V = R === A ? B : A, p = R.t === "sqrt" ? 2 : 3, rad = R.a.t === "par" ? R.a.a : R.a;
+    const vv = ev(V, e); if (R.t === "sqrt" && vv < 0) return `Căn bậc hai số học luôn ≥ 0, không thể bằng số âm. ${Mi(KNOW.L0)}`;
+    return `Kiểm tra ngược: (${Mi(toM(V))})${p === 2 ? "²" : "³"} = ${vn(Math.pow(vv, p))}, khác ${Mi(toM(rad))}.${/\./.test(JSON.stringify(rad)) || /\.\d/.test(String(ev(rad, e))) ? " " + Mi(KNOW.L6) : ""}`; }
+  const sqOf = X => X.t === "sqrt" && (X.a.t === "^" || (X.a.t === "par" && X.a.a.t === "^"));
+  if (sqOf(A) || sqOf(B)) return Mi(KNOW.L1);
+  if (hv) { const bad = E.find(en => !isNaN(ev(A, en)) && !isNaN(ev(B, en)) && Math.abs(ev(A, en) - ev(B, en)) > 1e-7);
+    if (bad) { const v = Object.keys(bad).find(k => JSON.stringify([A, B]).includes(`"v":"${k}"`)) || "x"; return `Thử ${v} = ${vn(bad[v])}: vế trái bằng ${vn(ev(A, bad))}, vế phải bằng ${vn(ev(B, bad))}. Em kiểm tra lại dấu và các bước biến đổi.`; } }
+  const a = ev(A, e), b = ev(B, e); return `Vế trái ${a > b ? "lớn hơn" : "nhỏ hơn"} vế phải. Em kiểm tra lại phép tính.`;
+}
+function botReply(raw) {
+  const t = raw.trim(), low = t.toLowerCase(), C = BOT.ctx;
+  if (/^(chào|xin chào|chao|hi|hello|alo)\b/.test(low)) return `Chào em! ${C && !C.done ? "Mình đang cùng em làm câu ở trên. Em gõ <b>gợi ý</b> hoặc gõ bước em tính nhé." : "Em đang vướng phần nào trong chương Căn thức? Em có thể gõ phép tính (ví dụ <i>căn 0,49</i>) hoặc hỏi kiến thức."}`;
+  if (/^(thoát|thoat|hủy|huỷ|dừng|câu khác)/.test(low) && C) { BOT.ctx = null; return "Đã thoát câu đang làm. Em hỏi gì tiếp nào?"; }
+  if (/^(cảm ơn|cám ơn|cam on|thanks|ok|oke|vâng|dạ)\b/.test(low) && !/\d/.test(low)) return C && !C.done ? "Em làm tiếp nhé. Gõ bước em tính được, mình kiểm tra cho." : "Không có gì! Em cứ hỏi khi cần nhé.";
+  const want = GIVE.some(w => low.includes(w));
+  if (C && !C.done) return tutor(t, low, want);
+  if (C && C.done && (listVals(t) || analyze(t).kind !== "none")) return tutor(t, low, want);
+  if (C && C.done && (want || HELP.test(low))) return `Câu này em đã có hướng giải rồi. Em quay lại trang luyện tập để chọn đáp án nhé. Muốn hỏi câu khác, em gõ <b>thoát</b>.`;
+  return free(t, low, want);
+}
+function tutor(t, low, want) {
+  const C = BOT.ctx, q = C.q, V = itemVals(q), E = envs(q.q);
+  const L = t.match(/^(?:đáp án|dap an|em chọn|chọn|chon|câu)?\s*([abcd])\s*[.)]?\s*$/i);
+  if (L) return judgeOpt(C, C.P["abcd".indexOf(L[1].toLowerCase())]);
+  if (want) return C.tries >= 2 ? detailed(C) : `Mình chưa đưa đáp án ngay, vì em tự làm ra thì mới nhớ lâu.<br>${nextHint(C)}`;
+  if (HELP.test(low) && !/\d/.test(low)) return nextHint(C) + (C.hint === 1 ? knowFor(q) : "");
+  // danh sách số: "0,6 và −0,6"
+  const mth = low.match(/(?:nhân|nhan)\s*(?:cả\s*tử\s*(?:và|,)?\s*mẫu\s*)?(?:với|voi)\s*(.+)$/);
+  if (mth) { const n = tryParse(mth[1]); const s = n && stepNodes(q).find(x => x.sub && x.n && sameVal(x.n, n, E));
+    if (s) return `✓ Đúng hướng: nhân cả tử và mẫu với ${Mi(toM(n))}. Biểu thức trở thành ${Mi(q.st[Math.min(s.k + 1, q.st.length - 2)] || q.st[0])}. Em tính tiếp mẫu rồi rút gọn nhé.`;
+    if (n) { C.tries++; return `Nhân với ${Mi(toM(n))} chưa phải cách hay cho câu này. ${knowFor(q)}${nextHint(C)}`; } }
+  const lv = listVals(t);
+  if (lv) { const o = V.findIndex(v => v.list && sameSet(v.list, lv)); if (o >= 0) return judgeOpt(C, o); const one = V.findIndex(v => v.n && lv.some(x => Math.abs(ev(v.n, E[0]) - x) < 1e-7)); C.tries++; return `Chưa đúng. Em kiểm tra lại từng số.<br>${C.tries >= 3 ? detailed(C) : nextHint(C)}`; }
+  const A = analyze(t);
+  if (A.kind === "ineq") { const o = V.findIndex(v => v.ineq && sameIneq(v.ineq, A)); if (o >= 0) return judgeOpt(C, o);
+    const s = stepNodes(q).find(x => x.ineq && sameIneq(x.ineq, A)); if (s) return `✓ Đúng bước này: ${Mi(s.m)}. ${s.k + 1 < q.st.length - 1 ? `Bước tiếp theo: ${Mi(q.st[s.k + 1])}.` : ""} Em giải tiếp để ra kết quả cuối cùng nhé.`;
+    C.tries++; return `Chưa đúng: ${Mi(toM(A.L))} ${A.op.replace(">=", "≥").replace("<=", "≤")} ${Mi(toM(A.R))}. ${C.tries >= 3 ? detailed(C) : knowFor(q) + nextHint(C)}`; }
+  if (A.kind === "eq") {
+    // "x = 25": lấy vế phải làm đáp án
+    if (A.parts.length === 2 && A.parts[0].t === "var" && !hasVar(A.parts[1])) return tutorVal(C, A.parts[1], V, E, t);
+    const r = verifyEq(A.parts, E, q.q), last = A.parts[A.parts.length - 1];
+    if (!r.ok) { C.tries++; return r.h + "<br>" + (C.tries >= 3 ? detailed(C) : nextHint(C)); }
+    const o = V.findIndex(v => v.n && sameVal(v.n, last, E));
+    if (o === q.a && simple(last)) return r.h + "<br>" + judgeOpt(C, o);
+    return r.h + `<br>Các bước em viết đều đúng. ${o === q.a ? "Giá trị cuối đúng rồi, em viết gọn hơn nữa nhé." : "Em làm tiếp đến kết quả cuối cùng."}`;
+  }
+  if (A.kind === "expr") return tutorVal(C, A.n, V, E, t);
+  const hit = KB.find(x => x.k.some(w => low.includes(w)));
+  if (hit) return Mi(hit.a) + `<br><br>Quay lại câu đang làm: gõ <b>gợi ý</b> hoặc gõ bước em tính được.`;
+  return `Mình chưa hiểu ý em. Với câu này, em có thể gõ <b>gợi ý</b>, gõ một bước như <i>căn 75 chia căn 3 = căn 25</i>, hoặc gõ chữ cái đáp án (A, B, C, D).<br>Không có dấu căn thì gõ chữ <b>căn</b>; muốn cả biểu thức nằm trong căn thì dùng ngoặc: <i>căn(0,32 − 0,04)</i>.`;
+}
+const isInt = v => Math.abs(v - Math.round(v)) < 1e-9;
+const sqFree = k => { if (!isInt(k) || k < 2) return false; for (let d = 2; d * d <= k; d++) if (k % (d * d) === 0) return false; return true; };
+const gcd = (a, b) => b ? gcd(b, a % b) : Math.abs(a);
+const pureNum = n => !hasVar(n) && !hasSqrtIn(n);
+function simple(n) { // đã viết gọn đến cùng chưa
+  switch (n.t) {
+    case "num": case "var": return true;
+    case "neg": case "par": return simple(n.a);
+    case "sqrt": { const r = n.a.t === "par" ? n.a.a : n.a; return r.t === "num" ? sqFree(r.v) : r.t === "var"; }
+    case "^": return n.a.t === "var" && n.b.t === "num";
+    case "*": return simple(n.a) && simple(n.b) && !(pureNum(n.a) && pureNum(n.b));
+    case "/": { const a = n.a.t === "par" ? n.a.a : n.a, b = n.b.t === "par" ? n.b.a : n.b; if (hasSqrtIn(b) && !hasVar(b)) return false;
+      if (pureNum(a) && pureNum(b)) { const x = ev(a, {}), y = ev(b, {}); return isInt(x) && isInt(y) && !isInt(x / y) && gcd(x, y) === 1; }
+      const cf = x => x.t === "num" ? x.v : x.t === "neg" ? cf(x.a) : x.t === "*" && x.a.t === "num" ? x.a.v : x.t === "sqrt" ? 1 : null;
+      if (pureNum(b) && !hasVar(a) && cf(a) !== null && isInt(cf(a)) && isInt(ev(b, {})) && gcd(cf(a), ev(b, {})) > 1) return false;
+      return simple(a) && simple(b); }
+    case "+": case "-": return simple(n.a) && simple(n.b) && !(pureNum(n.a) && pureNum(n.b));
+  }
+  return false; }
+function tutorVal(C, n, V, E, raw) {
+  const q = C.q, show = `Mình hiểu là: ${Mi(toM(n))}. `;
+  const neg = negRad(n, E[0]); if (neg) { C.tries++; return show + `Biểu thức dưới căn ${Mi(toM(neg))} âm nên không xác định. ${Mi(KNOW.L3)}`; }
+  const o = V.findIndex(v => v.n && sameVal(v.n, n, E));
+  if (o === q.a) return simple(n) ? judgeOpt(C, o) : show + "Giá trị này đúng rồi, nhưng em viết gọn đến cùng nhé (khai căn hết, rút gọn hết).";
+  if (o >= 0 && q.e[o]) return show + judgeOpt(C, o); // đáp án nhiễu có mã lỗi: chỉ ra lỗi
+  const s = stepNodes(q).find(x => x.n && sameVal(x.n, n, E) && !sameVal(x.n, V[q.a].n || {t: "num", v: NaN}, E));
+  if (!s && o >= 0) return show + judgeOpt(C, o);
+  if (s) { const nx = q.st[s.k + (s.sub ? 1 : 1)]; const isLast = s.k + 1 >= q.st.length - 1;
+    return show + `✓ Đúng: ${Mi(s.m)} = ${Mi(toM(n))}. ${!isLast && nx ? `Biểu thức trở thành ${Mi(nx)}. Em tính tiếp bước này nhé.` : "Còn một bước nữa, em làm tiếp để ra kết quả cuối cùng."}`; }
+  C.tries++;
+  const base = show + "Chưa đúng. ";
+  return base + (C.tries >= 3 ? detailed(C) : knowFor(q) + nextHint(C));
+}
+function free(t, low, want) {
+  const lv = listVals(t);
+  const A = lv ? {kind: "none"} : analyze(t);
+  if (A.kind === "eq") { const E = envs(t), r = verifyEq(A.parts, E, t), hv = A.parts.some(hasVar);
+    BOT.last = null; return r.h + (r.ok ? `<br>${hv ? "Đẳng thức đúng với các giá trị làm biểu thức xác định mà mình thử." : "Em làm đúng rồi! 👍"}` : "<br>Em sửa lại rồi gõ cho mình kiểm tra nhé."); }
+  if (A.kind === "expr") {
+    const n = A.n, hv = hasVar(n), show = `Mình hiểu là: ${Mi(toM(n))}`, tip = scopeTip(n, A.scope);
+    if (hv) { const rads = []; walk(n, x => { if (x.t === "sqrt") rads.push(x.a.t === "par" ? x.a.a : x.a); }); const dens = []; walk(n, x => { if (x.t === "/" && hasVar(x.b)) dens.push(x.b.t === "par" ? x.b.a : x.b); });
+      return show + `.${tip}<br>Nếu em cần <b>điều kiện xác định</b>: ${[...rads.map(r => Mi(toM(r)) + " ≥ 0"), ...dens.map(d => Mi(toM(d)) + " ≠ 0")].join("; ") || "biểu thức này không có căn hay mẫu chứa biến"}.<br>Nếu em cần <b>rút gọn</b>, em gõ từng bước dạng <i>A = B</i>, mình kiểm tra từng dấu bằng.`; }
+    if (!simple(n) || n.t === "sqrt") {
+      const neg = negRad(n, {}); if (neg) return show + `.${tip}<br>Biểu thức dưới căn ${Mi(toM(neg))} có giá trị âm nên căn bậc hai <b>không xác định</b>. Căn bậc ba thì vẫn tính được với số âm.`;
+      BOT.last = {n, tries: 0};
+      return show + `.${tip}<br>${hintFor(n)}<br>Em tính thử rồi gõ kết quả, mình kiểm tra cho.`; }
+    if (BOT.last) { const L = BOT.last, v = ev(n, {}), w = ev(L.n, {});
+      if (Math.abs(v - w) < 1e-7) { BOT.last = null; return `✓ Đúng rồi: ${Mi(toM(L.n))} = ${Mi(toM(n))}. Giỏi lắm!`; }
+      L.tries++; if (L.tries >= 3) { BOT.last = null; return `Chưa đúng. Mình hướng dẫn chi tiết nhé:<br>${solveSteps(L.n)}`; }
+      return `Chưa đúng: ${Mi(toM(L.n))} ≠ ${Mi(toM(n))}. ${diag(L.n, n, [{}])}<br>Em thử lại nhé (lần ${L.tries}/3).`; }
+  }
+  if (A.kind === "expr" && simple(A.n) && !BOT.last) return `Em gõ ${Mi(toM(A.n))}. Em muốn mình kiểm tra phép tính nào? Gõ cả phép tính, ví dụ <i>căn 625 = 25</i>.`;
+  if (lv && BOT.last) return `${lv.length} số em gõ: mình chỉ kiểm tra một kết quả cho ${Mi(toM(BOT.last.n))}. Lưu ý √{a} là <b>một</b> số không âm.`;
+  const hit = KB.find(x => x.k.some(w => low.includes(w)));
+  if (hit) return (want ? "Mình không đưa đáp án, nhưng cùng em làm từng bước nhé.<br>" : "") + Mi(hit.a);
+  if (want) return "Mình không đưa đáp án ngay, nhưng sẽ gợi ý để em tự làm được. Em gõ đề hoặc phép tính (ví dụ <i>căn 75 chia căn 3</i>) và cho mình biết em đã làm đến đâu nhé.";
+  if (HELP.test(low)) return `Em gõ phép tính đang làm, mình gợi ý cách tính. Ví dụ: <i>căn 0,49</i>, <i>căn bậc ba của −27</i>, <i>căn 2 nhân căn 50</i>, <i>1/(căn 5 + 2)</i>. Muốn hỏi một câu trong bài luyện tập, em bấm nút <b>Hỏi trợ lý</b> ngay dưới câu đó.`;
+  return `Mình chưa hiểu ý em. Mình giúp được:<ul><li>Gõ phép tính để mình gợi ý: <i>căn 0,49</i>, <i>căn(0,32 − 0,04)</i>, <i>căn bậc ba của −8</i>.</li><li>Gõ một bước để mình kiểm tra: <i>căn 0,49 = 0,7</i>.</li><li>Hỏi kiến thức: điều kiện xác định, căn bậc ba, trục căn thức, rút gọn...</li></ul>`;
+}
+function scopeTip(n, sc) { if (!sc || !["+", "-", "*", "/"].includes(n.t) || !["sqrt", "cbrt"].includes(n.a.t) || n.a.br) return "";
+  const alt = {t: n.a.t, a: {t: n.t, a: n.a.a, b: n.b}}, plain = toM(alt.a).replace(/√\{/g, "căn(").replace(/∛\{/g, "căn bậc ba(").replace(/}/g, ")").replace(/\\f\{([^}]*)\}\{([^}]*)\}/g, "($1)/($2)");
+  return `<div class="tipbox">Nếu em muốn ${Mi(toM(alt))} thì gõ có ngoặc: <i>${n.a.t === "sqrt" ? "căn" : "căn bậc ba"}(${esc(plain)})</i>.</div>`; }
+function hintFor(n) { // kiến thức cần dùng cho phép tính số
+  const has = t => { let f = false; walk(n, x => { if (x.t === t) f = true; }); return f; };
+  const decRad = (() => { let f = false; walk(n, x => { if ((x.t === "sqrt" || x.t === "cbrt") && /\./.test(JSON.stringify(x.a))) f = true; }); return f; })();
+  if (n.t === "sqrt" && !["*", "/"].includes((n.a.t === "par" ? n.a.a : n.a).t) && !hasSqrtIn(n.a)) { const r = n.a.t === "par" ? n.a.a : n.a;
+    if (["+", "-"].includes(r.t)) return `Đây là căn của một tổng/hiệu: tính ${Mi(toM(r))} trước rồi mới khai căn. ${Mi(KNOW.L2)}`;
+    return `Em tìm số <b>không âm</b> mà bình phương bằng ${Mi(toM(r))}.${decRad ? " " + Mi(KNOW.L6) : ""}`; }
+  if (n.t === "cbrt") return `Em tìm số mà lập phương bằng ${Mi(toM(n.a.t === "par" ? n.a.a : n.a))}. ${Mi(KNOW.L8)}`;
+  if (n.t === "*" && has("sqrt")) return `Dùng quy tắc nhân: √{A} · √{B} = √{AB} (A, B ≥ 0). Nhân các số dưới căn trước, rồi khai căn.`;
+  if (n.t === "/" && has("sqrt") && !["+", "-"].includes((n.b.t === "par" ? n.b.a : n.b).t)) return Mi("Dùng quy tắc chia: \\f{√{A}}{√{B}} = √{\\f{A}{B}}") + ". Gộp lại, chia trước rồi khai căn.";
+  if (n.t === "/" && has("sqrt")) return Mi(KNOW.L7);
+  let nsq = 0; walk(n, x => { if (x.t === "sqrt") nsq++; });
+  if ((n.t === "+" || n.t === "-") && nsq === 1) return "Thứ tự tính: khai căn trước, rồi mới cộng, trừ." + (decRad ? " " + Mi(KNOW.L6) : "");
+  if ((n.t === "+" || n.t === "-") && has("sqrt")) return Mi("Đưa các căn về cùng dạng a√{b} (đưa thừa số ra ngoài), rồi cộng trừ các hệ số.") + "<br>" + Mi(KNOW.L5);
+  return decRad ? Mi(KNOW.L6) : "Em tính lần lượt: trong ngoặc, căn, nhân chia, rồi cộng trừ.";
+}
+function hasSqrtIn(n) { let f = false; walk(n, x => { if (x.t === "sqrt" || x.t === "cbrt") f = true; }); return f; }
+function solveSteps(n) { // hướng dẫn chi tiết cho phép tính số (sau 3 lần sai)
+  const lines = []; walk(n, x => { if ((x.t === "sqrt" || x.t === "cbrt") && !hasSqrtIn(x.a)) { const v = ev(x, {}); if (isFinite(v)) lines.push(`${Mi(toM(x))} = ${vn(v)} vì ${vn(v)}${x.t === "sqrt" ? "²" : "³"} = ${vn(ev(x.a, {}))}`); } });
+  return `<ol>${lines.map(l => `<li>${l}</li>`).join("")}<li>Kết quả: ${Mi(toM(n))} = ${vn(ev(n, {}))}</li></ol>`;
+}
+function bot() {
+  if (!chat.length) botSay(`Chào ${esc(S.name || "em")}! Mình là trợ lý gợi ý chương Căn thức. Mình không đưa đáp án ngay, mà kiểm tra từng bước em làm và gợi ý tiếp. Em gõ chữ <b>căn</b> thay cho dấu √ cũng được, hoặc dùng bàn phím toán bên dưới.`);
+  const C = BOT.ctx;
+  const quick = C && !C.done ? ["gợi ý", "Em không hiểu đề", "Cho em đáp án", "thoát"] : ["căn 0,49", "căn(0,32 − 0,04)", "căn bậc ba của −27", "Khi nào căn A xác định?", "Căn bậc hai và căn bậc ba khác nhau thế nào?"];
+  app.innerHTML = back(C ? "lesson" : "home", C ? "← Về bài đang làm" : "← Lộ trình") + `<div class="pane"><h1>Trợ lý gợi ý</h1>${C ? `<p class="note">Đang hỗ trợ: ${LABEL[C.n]} · Câu ${C.i + 1}. Gõ <b>thoát</b> để hỏi chuyện khác.</p>` : `<p class="note">Hỏi kiến thức, gõ phép tính hoặc một bước em làm. Muốn hỏi một câu trong bài, bấm "Hỏi trợ lý" ngay dưới câu đó.</p>`}
+  <div class="chat" id="cbox" aria-live="polite">${chat.map(m => `<div class="bub ${m.me ? "me" : "bot"}">${m.h}</div>`).join("")}</div>
+  <div class="chips">${quick.map(q => `<button data-quick="${esc(q)}">${esc(q)}</button>`).join("")}</div>
+  <div class="keys" aria-label="Bàn phím toán">${[["√( )","√()"],["∛( )","∛()"],["x²","²"],["( )","()"],["| |","||"],["≥","≥"],["≤","≤"],["−","−"],[":",":"]].map(([l, v]) => `<button data-key="${esc(v)}">${esc(l)}</button>`).join("")}</div>
+  <form class="send" id="sf"><label for="mi" hidden>Tin nhắn</label><textarea id="mi" placeholder="Ví dụ: căn 0,49 = 0,7 · căn(0,32 − 0,04) · gợi ý"></textarea><button class="btn">Gửi</button></form></div>`;
+  const cb = document.getElementById("cbox"); cb.scrollTop = cb.scrollHeight;
+  const mi = document.getElementById("mi");
+  document.getElementById("sf").onsubmit = e => { e.preventDefault(); const v = mi.value.trim(); if (v) send(v); };
+  mi.onkeydown = e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); const v = mi.value.trim(); if (v) send(v); } };
+}
+function send(t) { meSay(t); let h; try { h = botReply(t); } catch (e) { h = "Mình chưa đọc được câu này. Em gõ lại theo cách khác nhé, ví dụ <i>căn(16 + 9)</i>."; } botSay(h || "Em gõ lại giúp mình nhé."); bot(); setTimeout(() => document.getElementById("mi")?.focus(), 0); }
+
+/* ===== Giáo viên ===== */
+function teacher() {
+  if (!SHEET_URL) return teacherView(sampleData(), false);
+  let pw = ""; try { pw = sessionStorage.getItem("ican-gv") || ""; } catch (e) {}
+  if (!pw) { app.innerHTML = back(S.name ? "home" : "login", "← Quay lại") + `<div class="pane login" style="max-width:480px;margin-top:6vh"><h1>Tiến độ lớp ${LOP}</h1><p class="note">Nhập mật khẩu giáo viên (đặt trong mã Google Apps Script).</p>
+    <form id="pwf"><label for="pw" class="note">Mật khẩu</label><input id="pw" type="password" autocomplete="current-password" style="width:100%;min-height:48px;font-size:18px;padding:8px 12px;border-radius:12px;border:2px solid var(--line);background:var(--pane);color:var(--ink)">
+    <div class="row" style="margin-top:14px"><button class="btn or">Xem tiến độ</button></div></form><p class="note" id="pwm"></p></div>`;
+    document.getElementById("pwf").onsubmit = e => { e.preventDefault(); const v = document.getElementById("pw").value.trim(); if (!v) return; try { sessionStorage.setItem("ican-gv", v); } catch (x) {} teacher(); }; return; }
+  app.innerHTML = `<div class="pane" style="margin-top:18px"><p>Đang tải số liệu từ Google Sheet...</p></div>`;
+  fetch(SHEET_URL + "?key=" + encodeURIComponent(pw)).then(r => r.json()).then(d => {
+    if (d.error) { try { sessionStorage.removeItem("ican-gv"); } catch (x) {} teacher(); setTimeout(() => { const m = document.getElementById("pwm"); if (m) m.textContent = "Sai mật khẩu, cô nhập lại nhé."; }, 0); return; }
+    teacherView(realData(d), true);
+  }).catch(() => { app.innerHTML = back(S.name ? "home" : "login", "← Quay lại") + `<div class="pane"><h2>Chưa tải được số liệu</h2><p>Cô kiểm tra mạng, hoặc kiểm tra link ứng dụng web đã triển khai với quyền "Bất kỳ ai".</p><button class="btn" data-go="teacher">Thử lại</button></div>`; });
+}
+function realData(d) {
+  const by = {}; (d.students || []).forEach(s => by[s.name] = s);
+  const rows = NAMES.map(n => { const s = by[n]; return s ? {n, pc: s.pct, cur: s.cur, sc: {c1: s.c1, c2: s.c2, c3: s.c3, ck: s.ck}, x: s.xn || 0, err: s.errs || "—", upd: s.upd, on: true} : {n, pc: 0, cur: "Chưa vào học", sc: {}, x: 0, err: "—", on: false}; });
+  Object.keys(by).filter(n => !NAMES.includes(n)).forEach(n => { const s = by[n]; rows.push({n, pc: s.pct, cur: s.cur, sc: {c1: s.c1, c2: s.c2, c3: s.c3, ck: s.ck}, x: s.xn || 0, err: s.errs || "—", upd: s.upd, on: true}); });
+  // câu hay sai: lần làm đầu tiên của mỗi em với mỗi câu
+  const first = {}, codes = {};
+  (d.events || []).forEach(([name, k, bai, cau, kq, ma]) => { if (k === "Điểm bài") return; const key = bai + "||" + cau, f = first[key] || (first[key] = {k, bai, cau, seen: {}, n: 0, sai: 0, ma: {}});
+    if (!f.seen[name]) { f.seen[name] = 1; f.n++; if (/^sai|bỏ trống|một phần/.test(kq)) { f.sai++; if (ma) f.ma[ma] = (f.ma[ma] || 0) + 1; } }
+    if (ma && /^sai|một phần/.test(kq)) codes[ma] = (codes[ma] || 0) + 1; });
+  const items = Object.values(first).filter(f => f.n >= 1).sort((a, b) => b.sai / b.n - a.sai / a.n || b.n - a.n).slice(0, 15);
+  return {rows, items, codes};
+}
+function sampleData() {
+  let seed = 11; const rnd = () => (seed = seed * 16807 % 2147483647) / 2147483647;
+  const rows = NAMES.map(n => { const k = Math.min(UNITS.length, Math.floor(Math.pow(rnd(), .7) * 7.5)); const sc = {}; UNITS.slice(0, k).forEach(u => { if (u.id) sc[u.id] = Math.round((7 + rnd() * 3) * 4) / 4; });
+    const cur = UNITS[k]; if (cur && cur.id && rnd() < .5) sc[cur.id] = Math.round((4 + rnd() * 2.9) * 4) / 4;
+    return {n, sc, cur: cur ? uName(cur) : "Về đích", on: true, err: ["L1 (3)", "L3 (2)", "L2 (2)", "L8 (1)", "—"][Math.floor(rnd() * 5)], x: Math.floor(rnd() * rnd() * 9), pc: Math.round((k + (cur ? rnd() * .6 : 0)) / UNITS.length * 100)}; });
+  const items = [{k: "Luyện tập", bai: "Bài 1", cau: "Câu 4: √((√7 − 3)²) bằng", n: 24, sai: 13, ma: {L1: 13}}, {k: "Kiểm tra", bai: "Kiểm tra Chặng 1", cau: "Câu 5: Biểu thức 3/√(6 − 2x) xác định khi", n: 21, sai: 10, ma: {L3: 10}}, {k: "Câu hỏi trong video", bai: "Bài 2", cau: "Câu dừng 2: Khẳng định nào đúng?", n: 18, sai: 6, ma: {}}];
+  return {rows, items, codes: {L1: 14, L3: 9, L2: 7, L8: 4, L6: 3}};
+}
+function teacherView(D, real) {
+  const rows = D.rows, N = rows.length, on = rows.filter(r => r.on).length, avgPc = Math.round(rows.reduce((s, r) => s + (r.pc || 0), 0) / N);
+  const num = v => v === "" || v === undefined || v === null ? null : Number(v);
+  const passC = id => rows.filter(r => (num(r.sc[id]) ?? -1) >= PASS).length;
+  const cell = (r, id) => num(r.sc[id]) === null ? "–" : `<span class="tag ${num(r.sc[id]) >= PASS ? "ok" : "no"}">${d10(num(r.sc[id]))}</span>`;
+  const E = Object.entries(D.codes).sort((a, b) => b[1] - a[1]), Emax = Math.max(1, ...E.map(e => e[1]));
+  const ago = t => { if (!t) return ""; const m = Math.round((Date.now() - new Date(t)) / 60000); return m < 60 ? m + " phút trước" : m < 1440 ? Math.round(m / 60) + " giờ trước" : Math.round(m / 1440) + " ngày trước"; };
+  app.innerHTML = back(S.name ? "home" : "login", "← Quay lại") + `<div class="pane"><h1>Tiến độ lớp ${LOP}</h1><p class="note">${real ? `Số liệu thật từ Google Sheet của cô, tải lúc ${new Date().toLocaleTimeString("vi-VN")}. <button class="btn ghost sm" data-go="teacher">Tải lại</button>` : "Dữ liệu mẫu để xem giao diện. Khi dán link Google Apps Script vào trang, bảng này sẽ hiện số liệu thật."}</p>
+  <div class="kpi"><div><b>${on}/${N}</b>em đã vào học</div><div><b>${avgPc}%</b>hoàn thành trung bình</div><div><b>${passC("c1")}/${N}</b>em qua Chặng 1</div><div><b>${passC("c2")}/${N}</b>em qua Chặng 2</div><div><b>${passC("c3")}/${N}</b>em qua Chặng 3</div></div>
+  <div class="row" style="margin-top:14px"><button class="btn ghost sm" data-act="${PREVIEW ? "unpreview" : "preview"}">${PREVIEW ? "Tắt chế độ xem thử" : "Mở khóa toàn bộ để xem thử (chỉ máy này)"}</button>${real ? `<button class="btn ghost sm" data-act="logoutgv">Thoát chế độ giáo viên</button>` : ""}</div></div>
+  <div class="pane"><h2>Những câu nhiều em sai nhất</h2><p class="note">Tính theo lần làm đầu tiên của mỗi em. Câu tỉ lệ sai cao là chỗ nên chữa trên lớp.</p>
+  ${D.items.length ? `<div class="scroll"><table><thead><tr><th>Phần</th><th>Câu</th><th class="r">Số em làm</th><th class="r">Sai lần đầu</th><th>Lỗi</th></tr></thead><tbody>${D.items.map(f => `<tr><td>${esc(f.bai)}<div class="note">${esc(f.k)}</div></td><td style="white-space:normal;min-width:240px">${esc(f.cau)}</td><td class="r">${f.n}</td><td class="r"><span class="tag ${f.sai / f.n >= .4 ? "no" : f.sai ? "mid" : "ok"}">${Math.round(f.sai / f.n * 100)}%</span></td><td>${Object.entries(f.ma).map(([c, k]) => `<span class="code">${c}</span>`).join(" ") || "–"}</td></tr>`).join("")}</tbody></table></div>` : "<p>Chưa có em nào làm bài.</p>"}</div>
+  <div class="pane"><h2>Lỗi cả lớp hay mắc</h2>${E.length ? E.map(([k, v]) => `<div class="brow"><span><span class="code">${k}</span>${M(ERRN[k] || "")}</span><div class="m"><i style="width:${v / Emax * 100}%;background:var(--no)"></i></div><span>${v} lần</span></div>`).join("") : "<p>Chưa có số liệu.</p>"}</div>
+  <div class="pane"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Từng học sinh</h2><label class="note"><input type="checkbox" id="only"> Chỉ hiện em chưa hoàn thành</label></div>
+  <div class="scroll" style="margin-top:10px"><table><thead><tr><th>Học sinh</th><th>Đang ở</th><th class="r">Hoàn thành</th><th class="r">KT C1</th><th class="r">KT C2</th><th class="r">KT C3</th><th class="r">Cuối chương</th><th class="r">Luyện thêm</th><th>Lỗi hay mắc</th>${real ? "<th>Cập nhật</th>" : ""}</tr></thead><tbody id="tb">${rows.map(r =>
+    `<tr data-done="${r.pc >= 100 ? 1 : 0}" class="${r.on ? "" : "off"}"><td>${esc(r.n)}</td><td>${esc(r.cur)}</td><td class="r">${r.pc}%</td><td class="r">${cell(r, "c1")}</td><td class="r">${cell(r, "c2")}</td><td class="r">${cell(r, "c3")}</td><td class="r">${cell(r, "ck")}</td><td class="r">${r.x} bộ</td><td>${esc(r.err)}</td>${real ? `<td class="note">${ago(r.upd)}</td>` : ""}</tr>`).join("")}</tbody></table></div>
+  <p class="note">Điểm là điểm cao nhất của em; đỏ là chưa đạt 7,0. Cô xem chi tiết từng câu từng em trong trang tính "NhatKy" của Google Sheet.</p></div>`;
+  document.getElementById("only").onchange = e => document.querySelectorAll("#tb tr").forEach(tr => tr.hidden = e.target.checked && tr.dataset.done === "1");
+}
+
+/* ===== Điều hướng ===== */
+function render() {
+  document.getElementById("who").textContent = screen === "teacher" ? "Giáo viên" : S.name || "Chưa chọn tên";
+  document.getElementById("botBtn").hidden = !S.name || ["teacher", "login"].includes(screen) || !!exam;
+  if (screen !== "lesson" && vid) { vid.pause(); vid = null; curCp = null; }
+  if (screen === "login") login(); else if (screen === "lesson") lesson(); else if (screen === "test") testScreen(); else if (screen === "bot") bot(); else if (screen === "teacher") teacher(); else home();
+  scrollTo(0, 0);
+}
+document.getElementById("botBtn").onclick = () => { if (exam) return toast("Đang làm bài kiểm tra, chưa dùng được trợ lý."); BOT.ctx = null; screen = "bot"; render(); };
+app.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b || b.disabled) return; const d = b.dataset;
+  if (d.go === "logout") { S = blank(); chat = []; BOT = {ctx: null, last: null}; save(); screen = "login"; render(); }
+  else if (d.go) { if (exam) return toast("Em đang làm bài kiểm tra. Nộp bài rồi mới rời đi được."); FROMHOME = screen === "home";
+    if (d.n) { CUR = +d.n; CURP = 99; } if (d.t) TID = d.t; if (d.free) BOT.ctx = null; screen = d.go; render(); }
+  else if (d.vp !== undefined) { if (vid) { vid.pause(); vid = null; curCp = null; } CURP = +d.vp; lesson(); }
+  else if (d.act === "logoutgv") { try { sessionStorage.removeItem("ican-gv"); } catch (x) {} screen = S.name ? "home" : "login"; render(); }
+  else if (d.act === "preview" || d.act === "unpreview") { PREVIEW = d.act === "preview"; try { localStorage.setItem(PKEY, PREVIEW ? "1" : "0"); } catch (x) {} render(); }
+  else if (d.act === "retake") { S.T[TID].retake = true; save(); testScreen(); scrollTo(0, 0); }
+  else if (d.p !== undefined) { const i = +d.p, o = +d.o, n = CUR, q = LES[n].prac[i], a = ls(n).prac[i] || (ls(n).prac[i] = {w: [], h: 0});
+    if (a.ok || a.w.includes(o) || a.w.length > a.h) return;
+    if (a.first === undefined) a.first = o === q.a;
+    logEv({k: "Luyện tập", bai: LABEL[n], cau: "Câu " + (i + 1) + ": " + plain(q.q), kq: o === q.a ? (a.w.length ? `đúng sau ${a.w.length} lần sai` : "đúng ngay") : "sai", ma: q.e[o] || ""});
+    if (o === q.a) a.ok = true; else a.w.push(o); save();
+    document.getElementById("pq-" + i).outerHTML = pq(i); const c = document.getElementById("cnt-p"); if (c) c.textContent = pracOk(n); if (a.ok && lessonDone(n)) checkLessonDone(n); }
+  else if (d.h !== undefined) { const i = +d.h, a = ls(CUR).prac[i] || (ls(CUR).prac[i] = {w: [], h: 0}); a.h++; save(); document.getElementById("pq-" + i).outerHTML = pq(i); }
+  else if (d.full !== undefined) { const i = +d.full; ls(CUR).prac[i].full = true; save(); document.getElementById("pq-" + i).outerHTML = pq(i); }
+  else if (d.ask !== undefined) { startTutor(CUR, +d.ask); screen = "bot"; render(); }
+  else if (d.ga) { const [i, id] = d.ga.split(":"), W = GW[CUR + ":" + i]; W.ord.push(id); W.bad = -1; W.msg = ""; document.getElementById("gq-" + i).outerHTML = gq(+i); }
+  else if (d.gr) { const [i, k] = d.gr.split(":").map(Number), W = GW[CUR + ":" + i]; W.ord.splice(k, 1); W.bad = -1; W.msg = ""; document.getElementById("gq-" + i).outerHTML = gq(i); }
+  else if (d.gx !== undefined) { const W = GW[CUR + ":" + d.gx]; W.ord = []; W.bad = -1; W.msg = ""; document.getElementById("gq-" + d.gx).outerHTML = gq(+d.gx); }
+  else if (d.gc !== undefined) ghCheck(+d.gc);
+  else if (d.gs !== undefined) { const W = GW[CUR + ":" + d.gs]; W.sol = !W.sol; if (W.sol) { W.used = true; W.ord = []; } document.getElementById("gq-" + d.gs).outerHTML = gq(+d.gs); }
+  else if (d.gagain !== undefined) { const g = LES[CUR].gh[+d.gagain], k = ghNew(g); k.again = true; GW[CUR + ":" + d.gagain] = k; document.getElementById("gq-" + d.gagain).outerHTML = gq(+d.gagain); }
+  else if (d.quick) send(d.quick);
+  else if (d.key) { const mi = document.getElementById("mi"), s = mi.selectionStart, v = d.key; mi.value = mi.value.slice(0, s) + v + mi.value.slice(mi.selectionEnd); const c = s + (v.endsWith("()") || v === "||" ? v.length - 1 : v.length); mi.focus(); mi.setSelectionRange(c, c); }
+  else if (d.e !== undefined) { exam.pick[exam.ord[exam.i]] = +d.e; examView(); }
+  else if (d.ds) { const [j, v] = d.ds.split(":").map(Number), k = exam.ord[exam.i]; const a = exam.pick[k] || (exam.pick[k] = [null, null, null, null]); a[j] = v === 1; examView(); }
+  else if (d.ta) { const k = exam.ord[exam.i]; (exam.pick[k] = exam.pick[k] || []).push(d.ta); examView(); }
+  else if (d.tr !== undefined) { exam.pick[exam.ord[exam.i]].splice(+d.tr, 1); examView(); }
+  else if (d.nav) { exam.i += +d.nav; examView(); }
+  else if (d.j !== undefined) { exam.i = +d.j; examView(); }
+  else if (b.id === "flag") { const k = exam.ord[exam.i]; exam.flag[k] = !exam.flag[k]; examView(); }
+  else if (b.id === "submit") { const left = exam.ord.filter(q => !answered(exam.items[q], exam.pick[q])).length; const m = document.createElement("div"); m.className = "modal";
+    m.innerHTML = `<div class="pane"><h2>Nộp bài?</h2><p>${left ? `Em còn <b>${left} câu</b> chưa làm.` : "Em đã làm hết các câu."} Nộp rồi thì không sửa được.</p><div class="row"><button class="btn ghost" id="no">Làm tiếp</button><button class="btn or" id="yes">Nộp bài</button></div></div>`;
+    document.body.appendChild(m); m.querySelector("#no").onclick = () => m.remove(); m.querySelector("#yes").onclick = () => { m.remove(); finish(); }; }
+});
+if (SHEET_URL) { const dm = document.querySelector(".demo"); if (dm) dm.textContent = "Tiến độ của em được tự động gửi cho cô."; }
+render();
+
+}
+</script>
+</body>
+</html>
