@@ -980,6 +980,8 @@ function diag(A, B, E) { // gợi ý vì sao sai, không đưa kết quả
   const sqProd = X => X.t === "sqrt" && (X.a.t === "par" ? X.a.a : X.a).t === "*" && JSON.stringify(X).includes('"neg"');
   if (sqProd(A) || sqProd(B)) { const o = sqProd(A) ? B : A; let neg = null; walk(o, z => { if (z.t === "sqrt" && ev(z.a, {}) < 0) neg = z; }); if (neg) return Mi(KNOW.L4); }
   if ((sumIn(A) && sumOf(B)) || (sumIn(B) && sumOf(A))) return Mi(KNOW.L2);
+  const radSum = X => { let t = 0, ok = X.t === "+" || X.t === "-"; walk(X, z => { if (z.t === "sqrt") t += ev(z.a, e); }); return ok ? t : NaN; };
+  for (const [X, Y] of [[A, B], [B, A]]) if (sumOf(X) && Y.t === "sqrt" && Math.abs(radSum(X) - ev(Y.a, e)) < 1e-9) return `${Mi(toM(X))} = ${vn(ev(X, e))}, còn ${Mi(toM(Y))} = ${vn(ev(Y, e))}. ${Mi(KNOW.L2)}`;
   const sq = (X, Y) => (X.t === "sqrt" || X.t === "cbrt") && !hasVar(X) && !hasVar(Y) && Y.t !== "sqrt";
   if (sq(A, B) || sq(B, A)) { const R = sq(A, B) ? A : B, V = R === A ? B : A, p = R.t === "sqrt" ? 2 : 3, rad = R.a.t === "par" ? R.a.a : R.a;
     const vv = ev(V, e); if (R.t === "sqrt" && vv < 0) return `Căn bậc hai số học luôn ≥ 0, không thể bằng số âm. ${Mi(KNOW.L0)}`;
@@ -1153,7 +1155,55 @@ function checkLast(t) {
 function chainAnd(t) { // "x ≥ 0 và x ≠ 4"
   const parts = t.split(/\s+và\s+|;|,/).map(x => x.trim()).filter(Boolean); if (parts.length < 2) return null;
   const C = parts.map(chain); if (C.some(c => !c)) return null; return {f: x => C.every(c => c.f(x))}; }
+/* ----- Câu hỏi khái niệm: căn bậc hai / căn bậc hai số học / căn bậc ba của một số ----- */
+const ASK = /(là\s*(bao nhiêu|gì|mấy|số nào))|(bằng\s*(bao nhiêu|mấy))|(tìm|tính)\s+(các\s+)?căn|^\s*(các\s+)?căn.*\?\s*$/i;
+const YESNO = /(có\s*phải|phải\s*không|đúng\s*không|đúng\s*chưa|có\s*đúng|không\s*\??\s*$|ko\s*\??\s*$|hả\s*\??\s*$|à\s*\??\s*$)/i;
+function numTxt(x) { const n = tryParse(String(x).replace(/\s+/g, "")); return n && !hasVar(n) ? ev(n, {}) : NaN; }
+function concept(raw) {
+  const low = raw.toLowerCase().replace(/[−–]/g, "-");
+  let m = low.match(/(các\s+)?căn\s*bậc\s*(hai|2|ba|3)(\s*số\s*học)?\s*(?:của\s*)?(?:số\s*)?(-?\s*\(?\s*-?[\d.,]+\s*\)?)/), kind, a, rest;
+  if (m) { kind = /ba|3/.test(m[2]) ? "cb3" : m[3] ? "cbhsh" : "ch2"; a = numTxt(m[4]); rest = low.slice(m.index + m[0].length); }
+  else { const m2 = low.match(/(?:√|căn\s*(?:của\s*)?)\s*\(?\s*(-?[\d.,]+)\s*\)?/); if (!m2) return null; kind = "cbhsh"; a = numTxt(m2[1]); rest = low.slice(m2.index + m2[0].length);
+    if (!/^\s*(có\s*phải|có\s*bằng|phải|là|bằng|=|\?|$)/.test(rest) || /[+*/:]|căn|√|-\s*\d.*(=|bằng)/.test(low.slice(0, m2.index))) return null; }
+  if (isNaN(a)) return null;
+  const A = vn(a), truth = kind === "cb3" ? [Math.cbrt(a)] : a < 0 ? [] : kind === "cbhsh" || a === 0 ? [Math.sqrt(a)] : [Math.sqrt(a), -Math.sqrt(a)];
+  const nm = kind === "cb3" ? "căn bậc ba" : kind === "cbhsh" ? "căn bậc hai số học" : "căn bậc hai", sym = kind === "cb3" ? Mi(`∛{${A}}`) : Mi(`√{${A}}`);
+  const why = kind === "cb3" ? `Mỗi số thực có <b>đúng một</b> căn bậc ba, cùng dấu với số đó: ${truth[0] < 0 ? "(" + vn(truth[0]) + ")" : vn(truth[0])}³ = ${A}.` :
+    a < 0 ? `Số âm <b>không có</b> căn bậc hai, vì không có số nào bình phương lên ra số âm.` :
+    kind === "cbhsh" ? `Căn bậc hai số học là căn bậc hai <b>không âm</b>: ${sym} = ${vn(truth[0])}. ${a > 0 ? `(Còn các căn bậc hai của ${A} là ${vn(truth[0])} và ${vn(-truth[0])}.)` : ""}` :
+    a === 0 ? `Số 0 có đúng một căn bậc hai là 0.` : `Số dương a có <b>hai</b> căn bậc hai là hai số đối nhau: ${sym} = ${vn(truth[0])} và −${sym} = ${vn(-truth[0])}, vì ${vn(truth[0])}² = (${vn(-truth[0])})² = ${A}.`;
+  // lấy phần khẳng định sau "là", "bằng", "="
+  const cm = rest.match(/(?:có\s*phải\s*là|có\s*phải|có\s*bằng|phải\s*là|là|bằng|=)\s*(.+?)\s*(?:không|ko|phải\s*không|đúng\s*không|đúng\s*chưa|hả|à|ạ|chứ)?\s*\??\s*$/);
+  let claim = null;
+  if (cm && !/^(bao nhiêu|gì|mấy|số nào)/.test(cm[1])) { const c = cm[1].replace(/\bvà\b/g, " và ").replace(/hoặc/g, " và ").replace(/,\s+/g, " và ");
+    claim = /±|\+-|cộng trừ/.test(c) ? (v => isNaN(v) ? null : [v, -v])(numTxt(c.replace(/±|\+-|cộng trừ/g, ""))) : listVals(c) || (v => isNaN(v) ? null : [v])(numTxt(c)); }
+  if (claim) { const ok = claim.length === truth.length && claim.every(v => truth.some(w => Math.abs(v - w) < 1e-9)) && truth.every(w => claim.some(v => Math.abs(v - w) < 1e-9));
+    let more = "";
+    if (!ok && kind === "ch2" && a > 0 && claim.length === 1 && Math.abs(claim[0] - truth[0]) < 1e-9) more = " Em mới nêu một giá trị, còn thiếu số đối của nó.";
+    if (!ok && kind === "cbhsh" && claim.length === 2) more = " Em đang nhầm căn bậc hai số học với căn bậc hai (lỗi L0): √ chỉ lấy giá trị không âm.";
+    if (!ok && kind === "cb3" && claim.length === 2) more = " Căn bậc ba không có hai giá trị ±.";
+    return {h: `${ok ? "<b>Đúng rồi!</b>" : "<b>Chưa đúng.</b>"}${more}<br>${why}`}; }
+  // hỏi giá trị: gợi ý rồi chờ em trả lời
+  const last = {kind: "cset", truth, why, nm, A, tries: 0};
+  const hint = kind === "cb3" ? `Em tìm số mà <b>lập phương</b> bằng ${A}.` : a < 0 ? `Em thử nghĩ: có số nào bình phương lên ra ${A} không?` : kind === "cbhsh" ? `Em tìm số <b>không âm</b> mà bình phương bằng ${A}.` : `Em tìm <b>các</b> số mà bình phương bằng ${A}. Gợi ý: có thể có hai số.`;
+  return {last, h: `${nm[0].toUpperCase() + nm.slice(1)} của ${A}: ${hint}<br>Em gõ câu trả lời (ví dụ <i>7 và −7</i>, hoặc <i>không có</i>), mình kiểm tra.`};
+}
+function checkCset(t) { const L = BOT.last; const low = t.toLowerCase();
+  let claim = /không có|không tồn tại|ko có/.test(low) ? [] : /±|\+-/.test(t) ? (v => isNaN(v) ? null : [v, -v])(numTxt(t.replace(/±|\+-/g, ""))) : listVals(t.replace(/,\s+/g, " và ")) || (v => isNaN(v) ? null : [v])(numTxt(t));
+  if (!claim) return null;
+  const ok = claim.length === L.truth.length && claim.every(v => L.truth.some(w => Math.abs(v - w) < 1e-9));
+  if (ok) { BOT.last = null; return `<b>Đúng rồi!</b> ${L.why}`; }
+  L.tries++; if (L.tries >= 3) { BOT.last = null; return `Chưa đúng. ${L.why}`; }
+  return `Chưa đúng (lần ${L.tries}/3). ${L.nm === "căn bậc hai" && claim.length === 1 ? "Em xem còn số nào khác bình phương cũng bằng " + L.A + " không?" : L.nm === "căn bậc hai số học" && claim.length === 2 ? "Căn bậc hai số học chỉ lấy giá trị không âm." : "Em thử lại nhé."}`; }
+function yesno(t) { // "√16 + √9 có bằng √25 không", "√49 = ±7 đúng không"
+  if (!YESNO.test(t)) return null;
+  const s = t.replace(/(có\s*phải\s*là|có\s*bằng|phải\s*là|có\s*phải)/gi, " = ").replace(/\s(là|bằng)\s/gi, " = ").replace(/(phải\s*không|đúng\s*không|đúng\s*chưa|có\s*đúng|không|ko|hả|à|ạ)\s*\??\s*$/i, "").replace(/\?/g, "");
+  if (/±/.test(s)) return null; const A = analyze(s); if (A.kind !== "eq") return null;
+  const r = verifyEq(A.parts, envs(t), t); return (r.ok ? "<b>Đúng.</b><br>" : "<b>Chưa đúng.</b><br>") + r.h;
+}
 function free(t, low, want) {
+  { const c = concept(t); if (c && (YESNO.test(t) || ASK.test(t) || /căn\s*bậc|số học/i.test(t))) { if (c.last) BOT.last = c.last; return c.h; } else if (!c && BOT.last && BOT.last.kind === "cset") { const r = checkCset(t); if (r) return r; } }
+  { const h = yesno(t); if (h) return h; }
   const T = task(t);
   if (T.kind && T.kind !== "calc") { const h = taskStart(T, want); if (h) return h; }
   if (BOT.last && BOT.last.kind) { const h = checkLast(t); if (h) return h; }
